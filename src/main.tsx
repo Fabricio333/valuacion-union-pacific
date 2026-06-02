@@ -68,6 +68,11 @@ const TRAIN = {
   gap: 42,
 }
 
+const TRAIN_ZOOM = {
+  overview: 0.56,
+  focused: 1.82,
+}
+
 const TRANSITION_MS = {
   zoomOut: 1150,
   move: 1550,
@@ -158,19 +163,32 @@ function RailBackdrop() {
 function Locomotive() {
   return (
     <div className="locomotive" aria-hidden="true">
-      <div className="engine-roof" />
-      <div className="cab-window" />
-      <div className="engine-door" />
+      <div className="engine-long-hood">
+        <div className="engine-name">Abraham Lincoln</div>
+        <div className="engine-flag">
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <div className="hood-vents" />
+      </div>
+      <div className="engine-cab">
+        <div className="number-board">1616</div>
+        <div className="cab-number">1616</div>
+        <div className="cab-window cab-window-side" />
+        <div className="cab-window cab-window-front" />
+        <div className="lincoln-medallion">AL</div>
+      </div>
       <div className="headlight" />
       <div className="nose" />
-      <div className="stripe" />
+      <div className="side-stripe" />
+      <div className="lower-stripe" />
+      <div className="running-board" />
+      <div className="handrail handrail-long" />
+      <div className="handrail handrail-front" />
       <div className="plow" />
       <div className="engine-mark">UNION PACIFIC</div>
-      <div className="smoke">
-        <i />
-        <i />
-        <i />
-      </div>
       <div className="wheel w1" />
       <div className="wheel w2" />
       <div className="wheel w3" />
@@ -181,22 +199,30 @@ function Locomotive() {
 type TrainWorldProps = {
   selectedIndex: number
   viewIndex: number
+  trackViewIndex: number
   phase: Phase
   slides: Slide[]
   trainOffsetX: number
   onSelect: (index: number) => void
 }
 
-function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
+function TrainWorld({ selectedIndex, viewIndex, trackViewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
   const wagonStart = TRAIN.startX
-  const visualSlot = viewIndex === -1 ? -1 : slides.length - 1 - viewIndex
   const firstSlideX = wagonStart + (slides.length - 1) * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
   const frozenTrainOffset = phase === 'overview' ? 0 : trainOffsetX
-  const activeX =
-    viewIndex === -1
-      ? firstSlideX + frozenTrainOffset
-      : wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + frozenTrainOffset
-  const activeY = TRAIN.top + TRAIN.wagonHeight / 2
+  const focusXForView = (targetIndex: number, extraOffsetX = 0) => {
+    if (targetIndex === -1) return firstSlideX + extraOffsetX
+
+    const visualSlot = slides.length - 1 - targetIndex
+    return wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + extraOffsetX
+  }
+  const trainFocusX = focusXForView(viewIndex, frozenTrainOffset)
+  const trackFocusX = focusXForView(trackViewIndex)
+  const wagonCenterY = TRAIN.top + TRAIN.wagonHeight / 2
+  const trainBottomY = TRAIN.top + TRAIN.wagonHeight + 26
+  const trackBottomY = TRAIN.top + TRAIN.wagonHeight + 20
+  const lockedTrainBottomY = (trainBottomY - wagonCenterY) * TRAIN_ZOOM.overview
+  const lockedTrackBottomY = (trackBottomY - wagonCenterY) * TRAIN_ZOOM.overview
   const isLandingOverview = phase === 'overview' && viewIndex === -1
   const isFocused = phase === 'zooming-in' || phase === 'fullscreen'
   const isHidden = phase === 'fullscreen'
@@ -211,56 +237,62 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onS
         className="rail-world"
         style={
           {
-            '--focus-x': `${activeX}px`,
-            '--focus-y': `${activeY}px`,
-            '--offset-x': `${-activeX}px`,
-            '--offset-y': `${-activeY}px`,
-            '--target-zoom': isFocused ? '1.82' : '.56',
+            '--train-offset-x': `${-trainFocusX}px`,
+            '--track-offset-x': `${-trackFocusX}px`,
+            '--train-origin-y': `${lockedTrainBottomY}px`,
+            '--track-origin-y': `${lockedTrackBottomY}px`,
+            '--train-offset-y': `${-trainBottomY}px`,
+            '--track-offset-y': `${-trackBottomY}px`,
+            '--target-zoom': `${isFocused ? TRAIN_ZOOM.focused : TRAIN_ZOOM.overview}`,
           } as React.CSSProperties
         }
       >
-        <RailBackdrop />
-        <div
-          className="train-consist"
-          style={{
-            left: TRAIN.startX,
-            top: TRAIN.top,
-            transform: frozenTrainOffset ? `translate3d(${frozenTrainOffset}px, 0, 0)` : undefined,
-          }}
-        >
-          {slides.map((_, visualIndex) => {
-            const i = slides.length - 1 - visualIndex
-            const slide = slides[i]
-            return (
-              <button
-                className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
-                key={slide.title}
-                onClick={() => onSelect(i)}
-                type="button"
-                aria-label={`Abrir vagón ${i + 1}: ${slide.title}`}
-              >
-                <div className="coupler coupler-left" />
-                <div className="wagon-ribs" />
-                <div className="wagon-label">
-                  <span>{String(i + 1).padStart(2, '0')}</span>
-                  {slide.cargo}
-                </div>
-                <div className="wagon-content">
-                  <div className="wagon-eyebrow">
-                    {slide.icon}
-                    {slide.eyebrow}
+        <div className="rail-world-layer rail-track-world">
+          <RailBackdrop />
+        </div>
+        <div className="rail-world-layer rail-train-world">
+          <div
+            className="train-consist"
+            style={{
+              left: TRAIN.startX,
+              top: TRAIN.top,
+              transform: frozenTrainOffset ? `translate3d(${frozenTrainOffset}px, 0, 0)` : undefined,
+            }}
+          >
+            {slides.map((_, visualIndex) => {
+              const i = slides.length - 1 - visualIndex
+              const slide = slides[i]
+              return (
+                <button
+                  className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
+                  key={slide.title}
+                  onClick={() => onSelect(i)}
+                  type="button"
+                  aria-label={`Abrir vagón ${i + 1}: ${slide.title}`}
+                >
+                  <div className="coupler coupler-left" />
+                  <div className="wagon-ribs" />
+                  <div className="wagon-label">
+                    <span>{String(i + 1).padStart(2, '0')}</span>
+                    {slide.cargo}
                   </div>
-                  <h2>{slide.title}</h2>
-                  {slide.subtitle && <p className="wagon-subtitle">{slide.subtitle}</p>}
-                  <div className="wagon-body">{slide.body}</div>
-                </div>
-                <div className="cargo-line" />
-                <div className="wheel w1" />
-                <div className="wheel w2" />
-              </button>
-            )
-          })}
-          <Locomotive />
+                  <div className="wagon-content">
+                    <div className="wagon-eyebrow">
+                      {slide.icon}
+                      {slide.eyebrow}
+                    </div>
+                    <h2>{slide.title}</h2>
+                    {slide.subtitle && <p className="wagon-subtitle">{slide.subtitle}</p>}
+                    <div className="wagon-body">{slide.body}</div>
+                  </div>
+                  <div className="cargo-line" />
+                  <div className="wheel w1" />
+                  <div className="wheel w2" />
+                </button>
+              )
+            })}
+            <Locomotive />
+          </div>
         </div>
       </div>
     </div>
@@ -311,6 +343,7 @@ function App() {
   const [index, setIndex] = useState(-1)
   const [phase, setPhase] = useState<Phase>('overview')
   const [viewIndex, setViewIndex] = useState(-1)
+  const [trackViewIndex, setTrackViewIndex] = useState(-1)
   const [trainOffsetX, setTrainOffsetX] = useState(0)
   const transitionTimers = useRef<number[]>([])
   const slides: Slide[] = useMemo(
@@ -527,11 +560,13 @@ function App() {
         if (index < 0) {
           setPhase('overview')
           setViewIndex(-1)
+          setTrackViewIndex(-1)
           return
         }
 
         setPhase('zooming-out')
         setViewIndex(index)
+        setTrackViewIndex(index)
         queue(() => {
           setPhase('moving')
           setViewIndex(-1)
@@ -539,6 +574,7 @@ function App() {
         queue(() => {
           setIndex(-1)
           setPhase('overview')
+          setTrackViewIndex(-1)
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
         return
       }
@@ -547,6 +583,7 @@ function App() {
         setTrainOffsetX(0)
         setPhase('zooming-out')
         setViewIndex(index)
+        setTrackViewIndex(index)
         queue(() => {
           setPhase('moving')
           setViewIndex(next)
@@ -558,12 +595,14 @@ function App() {
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
         queue(() => {
           setPhase('fullscreen')
+          setTrackViewIndex(next)
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
         return
       }
 
       const currentTrainOffset = readIdleTrainOffset()
       setTrainOffsetX(currentTrainOffset)
+      setTrackViewIndex(-1)
 
       setPhase('moving')
       setViewIndex(next)
@@ -574,6 +613,7 @@ function App() {
       }, TRANSITION_MS.move)
       queue(() => {
         setPhase('fullscreen')
+        setTrackViewIndex(next)
       }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
     },
     [index, phase, slides.length],
@@ -636,6 +676,7 @@ function App() {
         <TrainWorld
           selectedIndex={viewIndex >= 0 ? viewIndex : index}
           viewIndex={viewIndex}
+          trackViewIndex={trackViewIndex}
           phase={phase}
           slides={slides}
           trainOffsetX={trainOffsetX}
