@@ -33,19 +33,26 @@ function TrainScene() {
       <div className="track track-back" />
       <div className="track track-front" />
       <div className="train-wrap">
-        <div className="train locomotive">
-          <div className="cab-window" />
-          <div className="nose" />
-          <div className="stripe" />
-          <div className="wheel w1" /><div className="wheel w2" /><div className="wheel w3" />
-        </div>
-        {['Intermodal', 'Coal', 'Chemicals', 'Grain'].map((label, i) => (
+        {['Grain', 'Chemicals', 'Coal', 'Intermodal'].map((label, i) => (
           <div className={`train car car-${i}`} key={label}>
+            <div className="coupler coupler-left" />
             <span>{label}</span>
             <div className="cargo-line" />
             <div className="wheel w1" /><div className="wheel w2" />
           </div>
         ))}
+        <div className="train locomotive">
+          <div className="coupler coupler-left" />
+          <div className="engine-roof" />
+          <div className="cab-window" />
+          <div className="engine-door" />
+          <div className="headlight" />
+          <div className="nose" />
+          <div className="stripe" />
+          <div className="plow" />
+          <div className="smoke"><i /><i /><i /></div>
+          <div className="wheel w1" /><div className="wheel w2" /><div className="wheel w3" />
+        </div>
       </div>
       <div className="speed-lines"><span /><span /><span /></div>
     </div>
@@ -126,7 +133,7 @@ function App() {
     <main>
       <nav className="topbar"><div className="brand"><span>UNP</span> Valuación</div><div className="mock">Datos mock-up · no inversión</div></nav>
       <div className="progress"><i style={{width:`${((index+1)/slides.length)*100}%`}} /></div>
-      <section className="slide">
+      <section className="slide" key={index}>
         <div className="slide-copy"><div className="eyebrow">{slide.icon}{slide.eyebrow}</div><h1>{slide.title}</h1>{slide.subtitle && <p className="subtitle">{slide.subtitle}</p>}</div>
         <div className="slide-body">{slide.body}</div>
       </section>
