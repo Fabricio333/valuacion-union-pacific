@@ -803,7 +803,7 @@ h1 {
 }
 
 .fullscreen-slide.zooming-in {
-  animation: slide-enter .92s cubic-bezier(.22, 1, .36, 1) both;
+  animation: slide-enter 1.35s cubic-bezier(.22, 1, .36, 1) .38s both;
 }
 
 .fullscreen-slide.zooming-out {
@@ -1179,24 +1179,43 @@ h1 {
 }
 
 @keyframes slide-enter {
-  from {
+  0% {
+    opacity: 0;
+    transform: scale(.82);
+    filter: blur(16px);
+  }
+  42% {
     opacity: 0;
     transform: scale(.94);
+    filter: blur(10px);
   }
-  to {
+  72% {
+    opacity: .72;
+    transform: scale(.985);
+    filter: blur(3px);
+  }
+  100% {
     opacity: 1;
     transform: scale(1);
+    filter: blur(0);
   }
 }
 
 @keyframes slide-exit {
-  from {
+  0% {
     opacity: 1;
     transform: scale(1);
+    filter: blur(0);
   }
-  to {
+  65% {
+    opacity: .35;
+    transform: scale(.94);
+    filter: blur(6px);
+  }
+  100% {
     opacity: 0;
-    transform: scale(.9);
+    transform: scale(.86);
+    filter: blur(14px);
   }
 }
 

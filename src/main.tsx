@@ -50,7 +50,7 @@ const TRAIN = {
 const TRANSITION_MS = {
   zoomOut: 1100,
   move: 1180,
-  zoomIn: 980,
+  zoomIn: 1650,
 }
 
 function BarChart() {
