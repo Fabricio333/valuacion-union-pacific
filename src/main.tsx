@@ -22,6 +22,8 @@ type Slide = {
   cargo: string
 }
 
+type Phase = 'overview' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
+
 const money = ['US$ 24.1B', 'US$ 12.7B', '52.6%', 'US$ 6.3B']
 const ratios = [
   ['EV / EBITDA', '12.4x', 'Peer avg. 11.8x'],
@@ -43,6 +45,12 @@ const TRAIN = {
   wagonWidth: 470,
   wagonHeight: 320,
   gap: 42,
+}
+
+const TRANSITION_MS = {
+  zoomOut: 1100,
+  move: 1180,
+  zoomIn: 980,
 }
 
 function BarChart() {
@@ -125,20 +133,29 @@ function Locomotive() {
 type TrainWorldProps = {
   selectedIndex: number
   viewIndex: number
+  phase: Phase
   slides: Slide[]
   onSelect: (index: number) => void
 }
 
-function TrainWorld({ selectedIndex, viewIndex, slides, onSelect }: TrainWorldProps) {
-  const wagonStart = TRAIN.startX + TRAIN.engineWidth + TRAIN.gap
+function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: TrainWorldProps) {
+  const wagonStart = TRAIN.startX
+  const trainLength = slides.length * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.engineWidth
   const activeX =
     viewIndex === -1
-      ? wagonStart + (slides.length * (TRAIN.wagonWidth + TRAIN.gap)) / 2
+      ? wagonStart + trainLength / 2
       : wagonStart + viewIndex * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
   const activeY = viewIndex === -1 ? 385 : TRAIN.top + TRAIN.wagonHeight / 2
+  const isLandingOverview = phase === 'overview' && viewIndex === -1
+  const isFocused = phase === 'zooming-in' || phase === 'fullscreen'
+  const isHidden = phase === 'fullscreen'
 
   return (
-    <div className={`rail-camera ${viewIndex === -1 ? 'landing-mode' : 'slide-mode'}`}>
+    <div
+      className={`rail-camera ${isLandingOverview ? 'landing-mode' : 'slide-mode'} ${
+        isHidden ? 'train-hidden' : 'train-visible'
+      } ${phase}`}
+    >
       <div
         className="rail-world"
         style={
@@ -147,13 +164,12 @@ function TrainWorld({ selectedIndex, viewIndex, slides, onSelect }: TrainWorldPr
             '--focus-y': `${activeY}px`,
             '--offset-x': `${-activeX}px`,
             '--offset-y': `${-activeY}px`,
-            '--target-zoom': viewIndex === -1 ? '.38' : '1.34',
+            '--target-zoom': isFocused ? '1.16' : '.38',
           } as React.CSSProperties
         }
       >
         <RailBackdrop />
         <div className="train-consist" style={{ left: TRAIN.startX, top: TRAIN.top }}>
-          <Locomotive />
           {slides.map((slide, i) => (
             <button
               className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
@@ -182,16 +198,47 @@ function TrainWorld({ selectedIndex, viewIndex, slides, onSelect }: TrainWorldPr
               <div className="wheel w2" />
             </button>
           ))}
+          <Locomotive />
         </div>
       </div>
     </div>
   )
 }
 
+function SlideFullscreen({ index, phase, slide, total }: { index: number; phase: Phase; slide?: Slide; total: number }) {
+  if (!slide || index < 0) return null
+
+  const isVisible = phase === 'fullscreen' || phase === 'zooming-in' || phase === 'zooming-out'
+
+  return (
+    <article className={`fullscreen-slide ${isVisible ? 'visible' : ''} ${phase}`} aria-live="polite">
+      <div className="fullscreen-slide-inner">
+        <div className="slide-header">
+          <div className="slide-kicker">
+            {slide.icon}
+            <span>{slide.eyebrow}</span>
+          </div>
+          <span className="slide-count">
+            {String(index + 1).padStart(2, '0')} / {total}
+          </span>
+        </div>
+        <div className="slide-main">
+          <div>
+            <h2>{slide.title}</h2>
+            {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+          </div>
+          <div className="slide-body">{slide.body}</div>
+        </div>
+      </div>
+    </article>
+  )
+}
+
 function App() {
   const [index, setIndex] = useState(-1)
-  const [isTraveling, setIsTraveling] = useState(false)
-  const travelTimer = useRef<number | undefined>(undefined)
+  const [phase, setPhase] = useState<Phase>('overview')
+  const [viewIndex, setViewIndex] = useState(-1)
+  const transitionTimers = useRef<number[]>([])
   const slides: Slide[] = useMemo(
     () => [
       {
@@ -382,28 +429,72 @@ function App() {
   const navigateTo = useCallback(
     (target: number) => {
       const next = Math.max(-1, Math.min(slides.length - 1, target))
-      if (next === index) return
+      if (next === index && phase === 'fullscreen') return
+      if (next === index && phase === 'overview') return
 
-      if (travelTimer.current) window.clearTimeout(travelTimer.current)
+      transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
+      transitionTimers.current = []
 
-      if (index >= 0 && next >= 0) {
-        setIsTraveling(true)
-        travelTimer.current = window.setTimeout(() => {
-          setIndex(next)
-          setIsTraveling(false)
-        }, 420)
+      const queue = (callback: () => void, delay: number) => {
+        const timer = window.setTimeout(callback, delay)
+        transitionTimers.current.push(timer)
+      }
+
+      if (next === -1) {
+        if (index < 0) {
+          setPhase('overview')
+          setViewIndex(-1)
+          return
+        }
+
+        setPhase('zooming-out')
+        setViewIndex(index)
+        queue(() => {
+          setPhase('moving')
+          setViewIndex(-1)
+        }, TRANSITION_MS.zoomOut)
+        queue(() => {
+          setIndex(-1)
+          setPhase('overview')
+        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
         return
       }
 
-      setIsTraveling(false)
-      setIndex(next)
+      if (index >= 0) {
+        setPhase('zooming-out')
+        setViewIndex(index)
+        queue(() => {
+          setPhase('moving')
+          setViewIndex(next)
+        }, TRANSITION_MS.zoomOut)
+        queue(() => {
+          setIndex(next)
+          setPhase('zooming-in')
+          setViewIndex(next)
+        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
+        queue(() => {
+          setPhase('fullscreen')
+        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
+        return
+      }
+
+      setPhase('moving')
+      setViewIndex(next)
+      queue(() => {
+        setIndex(next)
+        setPhase('zooming-in')
+        setViewIndex(next)
+      }, TRANSITION_MS.move)
+      queue(() => {
+        setPhase('fullscreen')
+      }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
     },
-    [index, slides.length],
+    [index, phase, slides.length],
   )
 
   useEffect(() => {
     return () => {
-      if (travelTimer.current) window.clearTimeout(travelTimer.current)
+      transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
     }
   }, [])
 
@@ -419,25 +510,17 @@ function App() {
   const goNext = () => navigateTo(index + 1)
   const goPrev = () => navigateTo(index - 1)
   const progress = index === -1 ? 0 : ((index + 1) / slides.length) * 100
-  const viewIndex = isTraveling ? -1 : index
+  const activeSlide = index >= 0 ? slides[index] : undefined
+  const isTransitioning = phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
 
   return (
-    <main className={index === -1 ? 'is-landing' : 'is-slide'}>
-      <nav className="topbar">
-        <div className="brand">
-          <img src="/union-pacific-logo.svg" alt="Union Pacific logo" />
-          <span>UNP</span>
-          Valuación
-        </div>
-        <div className="mock">Datos mock-up · no inversión</div>
-      </nav>
-
+    <main className={`${index === -1 ? 'is-landing' : 'is-slide'} phase-${phase}`}>
       <div className="progress" aria-hidden="true">
         <i style={{ width: `${progress}%` }} />
       </div>
 
       <section className="deck-shell" aria-label="Presentación de valuación Union Pacific">
-        <div className={`landing-panel ${index === -1 ? 'visible' : ''}`}>
+        <div className={`landing-panel ${index === -1 && phase === 'overview' ? 'visible' : ''}`}>
           <div className="landing-title-row">
             <img className="landing-company-logo" src="/union-pacific-logo.svg" alt="Union Pacific logo" />
             <div>
@@ -452,7 +535,14 @@ function App() {
           </div>
         </div>
 
-        <TrainWorld selectedIndex={index} viewIndex={viewIndex} slides={slides} onSelect={navigateTo} />
+        <TrainWorld
+          selectedIndex={viewIndex >= 0 ? viewIndex : index}
+          viewIndex={viewIndex}
+          phase={phase}
+          slides={slides}
+          onSelect={navigateTo}
+        />
+        <SlideFullscreen index={index} phase={phase} slide={activeSlide} total={slides.length} />
       </section>
 
       <aside className="dots" aria-label="Navegación por vagones">
@@ -468,12 +558,12 @@ function App() {
       </aside>
 
       <footer className="controls">
-        <button onClick={goPrev} disabled={index === -1}>
+        <button onClick={goPrev} disabled={index === -1 || isTransitioning}>
           <ArrowLeft />
           Anterior
         </button>
         <span>{index === -1 ? 'Inicio' : `${String(index + 1).padStart(2, '0')} / ${slides.length}`}</span>
-        <button onClick={goNext} disabled={index === slides.length - 1}>
+        <button onClick={goNext} disabled={index === slides.length - 1 || isTransitioning}>
           Siguiente
           <ArrowRight />
         </button>
