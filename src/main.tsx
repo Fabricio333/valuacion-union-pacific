@@ -521,9 +521,10 @@ function App() {
   const progress = index === -1 ? 0 : ((index + 1) / slides.length) * 100
   const activeSlide = index >= 0 ? slides[index] : undefined
   const isTransitioning = phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
+  const motionPhaseClass = isTransitioning ? 'is-transitioning' : ''
 
   return (
-    <main className={`${index === -1 ? 'is-landing' : 'is-slide'} phase-${phase}`}>
+    <main className={`${index === -1 ? 'is-landing' : 'is-slide'} phase-${phase} ${motionPhaseClass}`}>
       <div className="progress" aria-hidden="true">
         <i style={{ width: `${progress}%` }} />
       </div>
