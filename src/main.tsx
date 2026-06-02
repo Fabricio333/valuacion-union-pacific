@@ -131,7 +131,7 @@ function App() {
   const slide = slides[index]
   return (
     <main>
-      <nav className="topbar"><div className="brand"><span>UNP</span> Valuación</div><div className="mock">Datos mock-up · no inversión</div></nav>
+      <nav className="topbar"><div className="brand"><img src="/union-pacific-logo.svg" alt="Union Pacific logo" /><span>UNP</span> Valuación</div><div className="mock">Datos mock-up · no inversión</div></nav>
       <div className="progress"><i style={{width:`${((index+1)/slides.length)*100}%`}} /></div>
       <section className="slide" key={index}>
         <div className="slide-copy"><div className="eyebrow">{slide.icon}{slide.eyebrow}</div><h1>{slide.title}</h1>{slide.subtitle && <p className="subtitle">{slide.subtitle}</p>}</div>
