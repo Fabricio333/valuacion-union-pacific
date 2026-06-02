@@ -24,6 +24,15 @@ type Slide = {
 
 type Phase = 'overview' | 'starting' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
 
+const landingBackgrounds = [
+  '/backgrounds/landing-rail.webp',
+  '/backgrounds/freight-yard.webp',
+  '/backgrounds/mountain-rail.webp',
+  '/backgrounds/desert-rail.webp',
+  '/backgrounds/horizon-rail.webp',
+  '/backgrounds/network-rail.webp',
+]
+
 // Slide color contract:
 // Each fullscreen slide must inherit the color family of its matching train wagon.
 // If slides are added/reordered, update this array and the .wagon-N CSS palette together.
@@ -52,18 +61,17 @@ const sensitivity = [
 
 const TRAIN = {
   startX: 220,
-  top: 250,
-  engineWidth: 430,
+  top: 300,
+  engineWidth: 530,
   wagonWidth: 470,
-  wagonHeight: 320,
+  wagonHeight: 260,
   gap: 42,
 }
 
 const TRANSITION_MS = {
-  start: 2200,
-  zoomOut: 1250,
-  move: 1650,
-  zoomIn: 2400,
+  zoomOut: 1150,
+  move: 1550,
+  zoomIn: 1650,
 }
 
 function BarChart() {
@@ -100,6 +108,30 @@ function DcfWaterfall() {
   )
 }
 
+function LandingPhotoBackdrop() {
+  const [backgroundIndex, setBackgroundIndex] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setBackgroundIndex((current) => (current + 1) % landingBackgrounds.length)
+    }, 5200)
+
+    return () => window.clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="landing-photo-backdrop" aria-hidden="true">
+      {landingBackgrounds.map((background, i) => (
+        <div
+          className={`landing-photo ${i === backgroundIndex ? 'active' : ''}`}
+          key={background}
+          style={{ backgroundImage: `url(${background})` }}
+        />
+      ))}
+    </div>
+  )
+}
+
 function RailBackdrop() {
   return (
     <>
@@ -111,10 +143,9 @@ function RailBackdrop() {
       <div className="mesa-layer mesa-layer-mid" />
       <div className="mesa-layer mesa-layer-near" />
       <div className="desert-floor" />
-      <div className="rail-bed" />
+      <div className="ties" />
       <div className="rail rail-top" />
       <div className="rail rail-bottom" />
-      <div className="ties" />
       <div className="speed-lines" aria-hidden="true">
         <span />
         <span />
@@ -152,19 +183,21 @@ type TrainWorldProps = {
   viewIndex: number
   phase: Phase
   slides: Slide[]
+  trainOffsetX: number
   onSelect: (index: number) => void
 }
 
-function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: TrainWorldProps) {
+function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
   const wagonStart = TRAIN.startX
-  const trainLength = slides.length * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.engineWidth
   const visualSlot = viewIndex === -1 ? -1 : slides.length - 1 - viewIndex
+  const firstSlideX = wagonStart + (slides.length - 1) * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
+  const frozenTrainOffset = phase === 'overview' ? 0 : trainOffsetX
   const activeX =
     viewIndex === -1
-      ? wagonStart + trainLength / 2
-      : wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
-  const activeY = viewIndex === -1 ? 385 : TRAIN.top + TRAIN.wagonHeight / 2
-  const isLandingOverview = (phase === 'overview' || phase === 'starting') && viewIndex === -1
+      ? firstSlideX + frozenTrainOffset
+      : wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + frozenTrainOffset
+  const activeY = TRAIN.top + TRAIN.wagonHeight / 2
+  const isLandingOverview = phase === 'overview' && viewIndex === -1
   const isFocused = phase === 'zooming-in' || phase === 'fullscreen'
   const isHidden = phase === 'fullscreen'
 
@@ -182,12 +215,19 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: Train
             '--focus-y': `${activeY}px`,
             '--offset-x': `${-activeX}px`,
             '--offset-y': `${-activeY}px`,
-            '--target-zoom': isFocused ? '1.16' : isLandingOverview ? '.48' : '.38',
+            '--target-zoom': isFocused ? '1.82' : '.56',
           } as React.CSSProperties
         }
       >
         <RailBackdrop />
-        <div className="train-consist" style={{ left: TRAIN.startX, top: TRAIN.top }}>
+        <div
+          className="train-consist"
+          style={{
+            left: TRAIN.startX,
+            top: TRAIN.top,
+            transform: frozenTrainOffset ? `translate3d(${frozenTrainOffset}px, 0, 0)` : undefined,
+          }}
+        >
           {slides.map((_, visualIndex) => {
             const i = slides.length - 1 - visualIndex
             const slide = slides[i]
@@ -271,6 +311,7 @@ function App() {
   const [index, setIndex] = useState(-1)
   const [phase, setPhase] = useState<Phase>('overview')
   const [viewIndex, setViewIndex] = useState(-1)
+  const [trainOffsetX, setTrainOffsetX] = useState(0)
   const transitionTimers = useRef<number[]>([])
   const slides: Slide[] = useMemo(
     () => [
@@ -473,7 +514,16 @@ function App() {
         transitionTimers.current.push(timer)
       }
 
+      const readIdleTrainOffset = () => {
+        const train = document.querySelector('.train-consist')
+        if (!train) return 0
+        const transform = window.getComputedStyle(train).transform
+        if (!transform || transform === 'none') return 0
+        return new DOMMatrixReadOnly(transform).m41
+      }
+
       if (next === -1) {
+        setTrainOffsetX(0)
         if (index < 0) {
           setPhase('overview')
           setViewIndex(-1)
@@ -494,6 +544,7 @@ function App() {
       }
 
       if (index >= 0) {
+        setTrainOffsetX(0)
         setPhase('zooming-out')
         setViewIndex(index)
         queue(() => {
@@ -511,20 +562,19 @@ function App() {
         return
       }
 
-      setPhase('starting')
-      setViewIndex(-1)
-      queue(() => {
-        setPhase('moving')
-        setViewIndex(next)
-      }, TRANSITION_MS.start)
+      const currentTrainOffset = readIdleTrainOffset()
+      setTrainOffsetX(currentTrainOffset)
+
+      setPhase('moving')
+      setViewIndex(next)
       queue(() => {
         setIndex(next)
         setPhase('zooming-in')
         setViewIndex(next)
-      }, TRANSITION_MS.start + TRANSITION_MS.move)
+      }, TRANSITION_MS.move)
       queue(() => {
         setPhase('fullscreen')
-      }, TRANSITION_MS.start + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
+      }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
     },
     [index, phase, slides.length],
   )
@@ -572,7 +622,7 @@ function App() {
       </div>
 
       <section className="deck-shell" aria-label="Presentación de valuación Union Pacific">
-        <div className="landing-photo-backdrop" aria-hidden="true" />
+        <LandingPhotoBackdrop />
         <div className={`landing-panel ${index === -1 && phase === 'overview' ? 'visible' : ''}`}>
           <div className="landing-title-row">
             <img className="landing-company-logo" src="/union-pacific-logo.svg" alt="Union Pacific logo" />
@@ -581,11 +631,6 @@ function App() {
               <h1>Valuación de Empresa: Union Pacific</h1>
             </div>
           </div>
-          <div className="hero-metrics">
-            {['Ticker UNP', 'Railroad freight', 'Moat operacional', 'DCF mock'].map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
         </div>
 
         <TrainWorld
@@ -593,6 +638,7 @@ function App() {
           viewIndex={viewIndex}
           phase={phase}
           slides={slides}
+          trainOffsetX={trainOffsetX}
           onSelect={navigateTo}
         />
         <SlideFullscreen index={index} phase={phase} slide={activeSlide} total={slides.length} />
@@ -610,19 +656,29 @@ function App() {
         ))}
       </aside>
 
-      <footer className="controls">
-        <button onClick={goPrev} disabled={index === -1 || isTransitioning}>
-          <ArrowLeft />
-          Anterior
-        </button>
-        <button className="restart-button" onClick={() => navigateTo(-1)} disabled={index === -1 || isTransitioning}>
-          Empezar de vuelta
-        </button>
-        <span>{index === -1 ? 'Inicio' : `${String(index + 1).padStart(2, '0')} / ${slides.length}`}</span>
-        <button onClick={goNext} disabled={index === slides.length - 1 || isTransitioning}>
-          Siguiente
-          <ArrowRight />
-        </button>
+      <footer className={`controls ${index === -1 ? 'start-controls' : ''}`}>
+        {index === -1 ? (
+          <button className="start-button" onClick={() => navigateTo(0)} disabled={isTransitioning}>
+            <TrainFront />
+            Comenzar
+            <ArrowRight />
+          </button>
+        ) : (
+          <>
+            <button onClick={goPrev} disabled={isTransitioning}>
+              <ArrowLeft />
+              Anterior
+            </button>
+            <button className="restart-button" onClick={() => navigateTo(-1)} disabled={isTransitioning}>
+              Inicio
+            </button>
+            <span>{`${String(index + 1).padStart(2, '0')} / ${slides.length}`}</span>
+            <button onClick={goNext} disabled={index === slides.length - 1 || isTransitioning}>
+              Siguiente
+              <ArrowRight />
+            </button>
+          </>
+        )}
       </footer>
     </main>
   )
