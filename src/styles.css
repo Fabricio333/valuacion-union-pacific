@@ -236,7 +236,7 @@ h1 {
 }
 
 .landing-mode .rail-world {
-  animation: overview-drift 24s ease-in-out infinite alternate;
+  animation: none;
 }
 
 .world-sky {
@@ -357,7 +357,7 @@ h1 {
     radial-gradient(ellipse at 72% 42%, #8d5a3b55 0 13%, transparent 34%),
     repeating-linear-gradient(8deg, #0000 0 52px, #1a0e0940 53px 58px),
     linear-gradient(180deg, #8c5638 0%, #3a241c 58%, #090806 100%);
-  animation: desert-drift 18s linear infinite;
+  animation: none;
 }
 
 .rail-bed {
