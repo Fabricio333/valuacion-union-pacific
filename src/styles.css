@@ -260,7 +260,7 @@ h1 {
 
 .landing-mode .rail-world {
   animation: none;
-  top: 70%;
+  top: 74%;
 }
 
 .world-sky {
@@ -377,7 +377,7 @@ h1 {
   position: absolute;
   left: -300px;
   right: -300px;
-  bottom: 54px;
+  bottom: 84px;
   height: 108px;
   background:
     repeating-linear-gradient(90deg, #00000020 0 34px, #d4a05726 34px 38px, #00000020 38px 76px),
@@ -399,16 +399,16 @@ h1 {
 }
 
 .rail-top {
-  bottom: 132px;
+  bottom: 164px;
 }
 
 .rail-bottom {
-  bottom: 86px;
+  bottom: 116px;
 }
 
 .ties {
-  bottom: 78px;
-  height: 72px;
+  bottom: 108px;
+  height: 74px;
   background: repeating-linear-gradient(90deg, transparent 0 34px, #17100b 34px 56px, transparent 56px 86px);
   opacity: .95;
 }
@@ -763,9 +763,9 @@ h1 {
 
 .wheel {
   position: absolute;
-  bottom: -30px;
-  width: 46px;
-  height: 46px;
+  bottom: -26px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: radial-gradient(circle, #f5bd26 0 17%, #111 18% 54%, #9098a3 55% 62%, #07080b 63%);
   animation: wheel .62s linear infinite;
