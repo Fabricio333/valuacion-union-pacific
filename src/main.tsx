@@ -22,7 +22,7 @@ type Slide = {
   cargo: string
 }
 
-type Phase = 'overview' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
+type Phase = 'overview' | 'starting' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
 
 const slideBackgrounds = [
   '/backgrounds/network-rail.webp',
@@ -57,6 +57,7 @@ const TRAIN = {
 }
 
 const TRANSITION_MS = {
+  start: 2200,
   zoomOut: 1250,
   move: 1650,
   zoomIn: 2400,
@@ -160,7 +161,7 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: Train
       ? wagonStart + trainLength / 2
       : wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
   const activeY = viewIndex === -1 ? 385 : TRAIN.top + TRAIN.wagonHeight / 2
-  const isLandingOverview = phase === 'overview' && viewIndex === -1
+  const isLandingOverview = (phase === 'overview' || phase === 'starting') && viewIndex === -1
   const isFocused = phase === 'zooming-in' || phase === 'fullscreen'
   const isHidden = phase === 'fullscreen'
 
@@ -496,16 +497,20 @@ function App() {
         return
       }
 
-      setPhase('moving')
-      setViewIndex(next)
+      setPhase('starting')
+      setViewIndex(-1)
+      queue(() => {
+        setPhase('moving')
+        setViewIndex(next)
+      }, TRANSITION_MS.start)
       queue(() => {
         setIndex(next)
         setPhase('zooming-in')
         setViewIndex(next)
-      }, TRANSITION_MS.move)
+      }, TRANSITION_MS.start + TRANSITION_MS.move)
       queue(() => {
         setPhase('fullscreen')
-      }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
+      }, TRANSITION_MS.start + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
     },
     [index, phase, slides.length],
   )
@@ -543,7 +548,7 @@ function App() {
   const goPrev = () => navigateTo(index - 1)
   const progress = index === -1 ? 0 : ((index + 1) / slides.length) * 100
   const activeSlide = index >= 0 ? slides[index] : undefined
-  const isTransitioning = phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
+  const isTransitioning = phase === 'starting' || phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
   const motionPhaseClass = isTransitioning ? 'is-transitioning' : ''
 
   return (

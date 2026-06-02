@@ -426,7 +426,11 @@ h1 {
 
 .landing-mode .train-consist {
   opacity: .96;
-  animation: train-forward 7.5s cubic-bezier(.16, 1, .3, 1) 1 both;
+  transform: translate3d(-1380px, 0, 0);
+}
+
+.landing-mode.starting .train-consist {
+  animation: train-enter-start 2.2s cubic-bezier(.16, 1, .3, 1) both;
 }
 
 .locomotive,
@@ -1297,6 +1301,15 @@ h1 {
   }
 }
 
+@keyframes train-enter-start {
+  0% {
+    transform: translate3d(-1380px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
 @keyframes wheel {
   to {
     transform: rotate(360deg);
@@ -1391,6 +1404,7 @@ h1 {
 }
 
 
+.rail-camera.starting::after,
 .rail-camera.moving::after,
 .rail-camera.zooming-in::after,
 .rail-camera.zooming-out::after {
