@@ -907,6 +907,43 @@ h1 {
   text-align: center;
 }
 
+/* Wagon-to-slide color contract
+   Keep each fullscreen slide in the same color family as its train wagon.
+   When adding/reordering slides:
+   1. Pick the wagon-N class used by the slide index.
+   2. Add/update the matching .wagon-theme-N values below.
+   3. Update wagonPalettes in src/main.tsx with the same base/deep/glow values.
+   This preserves the mental model: each wagon opens into its own fullscreen slide. */
+.wagon-theme-0 {
+  --wagon-base: #283850;
+  --wagon-deep: #121d2d;
+  --wagon-glow: #6f8fb8;
+}
+
+.wagon-theme-1 {
+  --wagon-base: #1f4f45;
+  --wagon-deep: #0f221f;
+  --wagon-glow: #5eb19e;
+}
+
+.wagon-theme-2 {
+  --wagon-base: #5b412a;
+  --wagon-deep: #21140d;
+  --wagon-glow: #d39a57;
+}
+
+.wagon-theme-3 {
+  --wagon-base: #39445c;
+  --wagon-deep: #111722;
+  --wagon-glow: #8ca0c6;
+}
+
+.wagon-theme-4 {
+  --wagon-base: #65303a;
+  --wagon-deep: #241016;
+  --wagon-glow: #d46a79;
+}
+
 .fullscreen-slide {
   position: absolute;
   inset: 0;
@@ -932,10 +969,12 @@ h1 {
   position: absolute;
   inset: -18px;
   z-index: 0;
-  background: var(--slide-bg) center / cover no-repeat;
-  opacity: .16;
-  filter: blur(2px) saturate(.85) contrast(1.05);
-  animation: slide-bg-drift 24s ease-in-out infinite alternate;
+  background:
+    linear-gradient(115deg, transparent 0 12%, color-mix(in srgb, var(--wagon-glow) 16%, transparent) 12% 13%, transparent 13% 34%, color-mix(in srgb, var(--wagon-glow) 12%, transparent) 34% 35%, transparent 35%),
+    repeating-linear-gradient(90deg, transparent 0 72px, color-mix(in srgb, var(--wagon-glow) 8%, transparent) 72px 73px, transparent 73px 144px);
+  opacity: .42;
+  filter: none;
+  animation: slide-bg-drift 28s ease-in-out infinite alternate;
 }
 
 .fullscreen-slide-inner {

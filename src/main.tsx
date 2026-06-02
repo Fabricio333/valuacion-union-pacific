@@ -24,13 +24,16 @@ type Slide = {
 
 type Phase = 'overview' | 'starting' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
 
-const slideBackgrounds = [
-  '/backgrounds/network-rail.webp',
-  '/backgrounds/freight-yard.webp',
-  '/backgrounds/mountain-rail.webp',
-  '/backgrounds/desert-rail.webp',
-  '/backgrounds/horizon-rail.webp',
-  '/backgrounds/landing-rail.webp',
+// Slide color contract:
+// Each fullscreen slide must inherit the color family of its matching train wagon.
+// If slides are added/reordered, update this array and the .wagon-N CSS palette together.
+// Do not use random slide background colors: the wagon is the navigation object, the slide is its fullscreen state.
+const wagonPalettes = [
+  { base: '#283850', deep: '#121d2d', glow: '#6f8fb8' },
+  { base: '#1f4f45', deep: '#0f221f', glow: '#5eb19e' },
+  { base: '#5b412a', deep: '#21140d', glow: '#d39a57' },
+  { base: '#39445c', deep: '#111722', glow: '#8ca0c6' },
+  { base: '#65303a', deep: '#241016', glow: '#d46a79' },
 ]
 
 const money = ['US$ 24.1B', 'US$ 12.7B', '52.6%', 'US$ 6.3B']
@@ -228,9 +231,20 @@ function SlideFullscreen({ index, phase, slide, total }: { index: number; phase:
   if (!slide || index < 0) return null
 
   const isVisible = phase === 'fullscreen' || phase === 'zooming-in' || phase === 'zooming-out'
+  const palette = wagonPalettes[index % wagonPalettes.length]
 
   return (
-    <article className={`fullscreen-slide ${isVisible ? 'visible' : ''} ${phase}`} aria-live="polite">
+    <article
+      className={`fullscreen-slide wagon-theme-${index % wagonPalettes.length} ${isVisible ? 'visible' : ''} ${phase}`}
+      style={
+        {
+          '--wagon-base': palette.base,
+          '--wagon-deep': palette.deep,
+          '--wagon-glow': palette.glow,
+        } as React.CSSProperties
+      }
+      aria-live="polite"
+    >
       <div className="fullscreen-slide-inner">
         <div className="slide-header">
           <div className="slide-kicker">
