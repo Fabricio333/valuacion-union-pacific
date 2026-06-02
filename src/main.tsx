@@ -145,10 +145,11 @@ type TrainWorldProps = {
 function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: TrainWorldProps) {
   const wagonStart = TRAIN.startX
   const trainLength = slides.length * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.engineWidth
+  const visualSlot = viewIndex === -1 ? -1 : slides.length - 1 - viewIndex
   const activeX =
     viewIndex === -1
       ? wagonStart + trainLength / 2
-      : wagonStart + viewIndex * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
+      : wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
   const activeY = viewIndex === -1 ? 385 : TRAIN.top + TRAIN.wagonHeight / 2
   const isLandingOverview = phase === 'overview' && viewIndex === -1
   const isFocused = phase === 'zooming-in' || phase === 'fullscreen'
@@ -174,34 +175,38 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: Train
       >
         <RailBackdrop />
         <div className="train-consist" style={{ left: TRAIN.startX, top: TRAIN.top }}>
-          {slides.map((slide, i) => (
-            <button
-              className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
-              key={slide.title}
-              onClick={() => onSelect(i)}
-              type="button"
-              aria-label={`Abrir vagón ${i + 1}: ${slide.title}`}
-            >
-              <div className="coupler coupler-left" />
-              <div className="wagon-ribs" />
-              <div className="wagon-label">
-                <span>{String(i + 1).padStart(2, '0')}</span>
-                {slide.cargo}
-              </div>
-              <div className="wagon-content">
-                <div className="wagon-eyebrow">
-                  {slide.icon}
-                  {slide.eyebrow}
+          {slides.map((_, visualIndex) => {
+            const i = slides.length - 1 - visualIndex
+            const slide = slides[i]
+            return (
+              <button
+                className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
+                key={slide.title}
+                onClick={() => onSelect(i)}
+                type="button"
+                aria-label={`Abrir vagón ${i + 1}: ${slide.title}`}
+              >
+                <div className="coupler coupler-left" />
+                <div className="wagon-ribs" />
+                <div className="wagon-label">
+                  <span>{String(i + 1).padStart(2, '0')}</span>
+                  {slide.cargo}
                 </div>
-                <h2>{slide.title}</h2>
-                {slide.subtitle && <p className="wagon-subtitle">{slide.subtitle}</p>}
-                <div className="wagon-body">{slide.body}</div>
-              </div>
-              <div className="cargo-line" />
-              <div className="wheel w1" />
-              <div className="wheel w2" />
-            </button>
-          ))}
+                <div className="wagon-content">
+                  <div className="wagon-eyebrow">
+                    {slide.icon}
+                    {slide.eyebrow}
+                  </div>
+                  <h2>{slide.title}</h2>
+                  {slide.subtitle && <p className="wagon-subtitle">{slide.subtitle}</p>}
+                  <div className="wagon-body">{slide.body}</div>
+                </div>
+                <div className="cargo-line" />
+                <div className="wheel w1" />
+                <div className="wheel w2" />
+              </button>
+            )
+          })}
           <Locomotive />
         </div>
       </div>
