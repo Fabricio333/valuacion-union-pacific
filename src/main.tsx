@@ -529,7 +529,7 @@ function App() {
             <img className="landing-company-logo" src="/union-pacific-logo.svg" alt="Union Pacific logo" />
             <div>
               <p>Trabajo Práctico de Valuación · mock-up académico</p>
-              <h1>Valuación de Empresa: Union Pacific Corporation</h1>
+              <h1>Valuación de Empresa: Union Pacific</h1>
             </div>
           </div>
           <div className="hero-metrics">
