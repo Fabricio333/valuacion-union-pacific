@@ -259,7 +259,7 @@ h1 {
   transform: perspective(780px) rotateX(62deg) translateY(180px);
   transform-origin: center bottom;
   opacity: .28;
-  animation: grid-drift 24s linear infinite;
+  animation: none;
 }
 
 .cloud-layer {
@@ -410,7 +410,7 @@ h1 {
 
 .landing-mode .train-consist {
   opacity: .96;
-  animation: train-cruise 14s linear infinite;
+  animation: train-cruise 16s ease-in-out infinite alternate;
 }
 
 .locomotive,
@@ -783,7 +783,7 @@ h1 {
 }
 
 .landing-mode .speed-lines {
-  opacity: 1;
+  opacity: 0;
 }
 
 .speed-lines span {
@@ -1247,10 +1247,10 @@ h1 {
 
 @keyframes train-cruise {
   0% {
-    transform: translateX(-180px);
+    transform: translateX(-120px);
   }
   100% {
-    transform: translateX(180px);
+    transform: translateX(120px);
   }
 }
 
