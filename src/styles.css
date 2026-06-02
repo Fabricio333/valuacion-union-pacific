@@ -1550,6 +1550,12 @@ h1 {
     padding: 9px 10px;
   }
 
+  .controls .restart-button {
+    max-width: 118px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .controls span {
     min-width: 62px;
     font-size: 13px;

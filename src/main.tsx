@@ -518,8 +518,22 @@ function App() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') navigateTo(index + 1)
-      if (event.key === 'ArrowLeft') navigateTo(index - 1)
+      const target = event.target as HTMLElement | null
+      const isTyping = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable
+      if (isTyping) return
+
+      if (event.key === 'ArrowRight' || event.key === ' ') {
+        event.preventDefault()
+        navigateTo(index + 1)
+      }
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        navigateTo(index - 1)
+      }
+      if (event.key === 'Home' || event.key === 'Enter') {
+        event.preventDefault()
+        navigateTo(-1)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -581,6 +595,9 @@ function App() {
         <button onClick={goPrev} disabled={index === -1 || isTransitioning}>
           <ArrowLeft />
           Anterior
+        </button>
+        <button className="restart-button" onClick={() => navigateTo(-1)} disabled={index === -1 || isTransitioning}>
+          Empezar de vuelta
         </button>
         <span>{index === -1 ? 'Inicio' : `${String(index + 1).padStart(2, '0')} / ${slides.length}`}</span>
         <button onClick={goNext} disabled={index === slides.length - 1 || isTransitioning}>
