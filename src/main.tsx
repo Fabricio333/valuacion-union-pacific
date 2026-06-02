@@ -168,7 +168,7 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, onSelect }: Train
             '--focus-y': `${activeY}px`,
             '--offset-x': `${-activeX}px`,
             '--offset-y': `${-activeY}px`,
-            '--target-zoom': isFocused ? '1.16' : '.38',
+            '--target-zoom': isFocused ? '1.16' : isLandingOverview ? '.29' : '.38',
           } as React.CSSProperties
         }
       >
