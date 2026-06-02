@@ -123,6 +123,28 @@ main {
   pointer-events: none;
 }
 
+.landing-photo-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(90deg, #080b11d8 0%, #10131ba8 42%, #090b10e6 100%),
+    linear-gradient(180deg, #00000050, #0000007c),
+    url('/backgrounds/landing-rail.webp') center / cover no-repeat;
+  transform: scale(1.04);
+  filter: saturate(.9) contrast(1.05);
+  opacity: .74;
+}
+
+.landing-photo-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 34% 24%, #f5bd261c, transparent 34%), radial-gradient(circle at 82% 70%, #d8222f24, transparent 38%);
+  mix-blend-mode: screen;
+  opacity: .85;
+}
+
 .landing-panel {
   position: absolute;
   z-index: 5;
@@ -246,7 +268,7 @@ h1 {
   background:
     radial-gradient(circle at 18% 20%, #fff6d680 0 6%, transparent 18%),
     linear-gradient(180deg, #7ea7cf 0%, #d9b07a 32%, #a66344 56%, #241b16 100%);
-  opacity: .98;
+  opacity: .62;
 }
 
 .world-sky::after {
@@ -317,7 +339,7 @@ h1 {
 
 .mesa-layer-far {
   height: 190px;
-  opacity: .86;
+  opacity: .38;
   background-image: linear-gradient(180deg, #866f62, #493d39);
   clip-path: polygon(0 72%, 7% 59%, 15% 62%, 23% 42%, 34% 43%, 41% 61%, 51% 54%, 59% 38%, 70% 40%, 77% 58%, 86% 52%, 100% 70%, 100% 100%, 0 100%);
   animation: parallax-far 58s linear infinite;
@@ -326,7 +348,7 @@ h1 {
 .mesa-layer-mid {
   bottom: 122px;
   height: 210px;
-  opacity: .96;
+  opacity: .52;
   background:
     linear-gradient(180deg, #b77549 0%, #8a4a34 55%, #3b2722 100%),
     repeating-linear-gradient(180deg, #ffffff14 0 3px, transparent 3px 24px);
@@ -338,7 +360,7 @@ h1 {
 .mesa-layer-near {
   bottom: 92px;
   height: 165px;
-  opacity: 1;
+  opacity: .58;
   background:
     linear-gradient(180deg, #c9834c 0%, #74402d 58%, #211615 100%),
     repeating-linear-gradient(100deg, #0000 0 42px, #0000001f 42px 50px);
@@ -910,6 +932,22 @@ h1 {
   pointer-events: auto;
 }
 
+.fullscreen-slide.visible::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  z-index: 0;
+  background: var(--slide-bg) center / cover no-repeat;
+  opacity: .16;
+  filter: blur(2px) saturate(.85) contrast(1.05);
+  animation: slide-bg-drift 24s ease-in-out infinite alternate;
+}
+
+.fullscreen-slide-inner {
+  position: relative;
+  z-index: 1;
+}
+
 .fullscreen-slide.zooming-in {
   animation: slide-enter 1.95s cubic-bezier(.16, 1, .26, 1) .82s both;
 }
@@ -1294,6 +1332,11 @@ h1 {
   to {
     background-position: -80px 80px;
   }
+}
+
+@keyframes slide-bg-drift {
+  from { transform: scale(1.02) translate3d(-12px, -8px, 0); }
+  to { transform: scale(1.07) translate3d(14px, 10px, 0); }
 }
 
 @keyframes slide-enter {

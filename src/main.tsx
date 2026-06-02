@@ -24,6 +24,15 @@ type Slide = {
 
 type Phase = 'overview' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
 
+const slideBackgrounds = [
+  '/backgrounds/network-rail.webp',
+  '/backgrounds/freight-yard.webp',
+  '/backgrounds/mountain-rail.webp',
+  '/backgrounds/desert-rail.webp',
+  '/backgrounds/horizon-rail.webp',
+  '/backgrounds/landing-rail.webp',
+]
+
 const money = ['US$ 24.1B', 'US$ 12.7B', '52.6%', 'US$ 6.3B']
 const ratios = [
   ['EV / EBITDA', '12.4x', 'Peer avg. 11.8x'],
@@ -530,6 +539,7 @@ function App() {
       </div>
 
       <section className="deck-shell" aria-label="Presentación de valuación Union Pacific">
+        <div className="landing-photo-backdrop" aria-hidden="true" />
         <div className={`landing-panel ${index === -1 && phase === 'overview' ? 'visible' : ''}`}>
           <div className="landing-title-row">
             <img className="landing-company-logo" src="/union-pacific-logo.svg" alt="Union Pacific logo" />
