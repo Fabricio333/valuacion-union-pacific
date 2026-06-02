@@ -48,9 +48,9 @@ const TRAIN = {
 }
 
 const TRANSITION_MS = {
-  zoomOut: 1100,
-  move: 1180,
-  zoomIn: 1650,
+  zoomOut: 1250,
+  move: 1650,
+  zoomIn: 2400,
 }
 
 function BarChart() {
