@@ -233,47 +233,122 @@ h1 {
 .world-sky {
   position: absolute;
   inset: 0;
+  background:
+    radial-gradient(circle at 18% 20%, #fff6d680 0 6%, transparent 18%),
+    linear-gradient(180deg, #7ea7cf 0%, #d9b07a 32%, #a66344 56%, #241b16 100%);
+  opacity: .98;
+}
+
+.world-sky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   background-image:
-    linear-gradient(#ffffff16 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff12 1px, transparent 1px);
-  background-size: 80px 80px;
-  transform: perspective(600px) rotateX(58deg) translateY(120px);
+    linear-gradient(#ffffff10 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff0c 1px, transparent 1px);
+  background-size: 120px 120px;
+  transform: perspective(780px) rotateX(62deg) translateY(180px);
   transform-origin: center bottom;
-  opacity: .58;
-  animation: grid-drift 8s linear infinite;
+  opacity: .28;
+  animation: grid-drift 24s linear infinite;
+}
+
+.cloud-layer {
+  position: absolute;
+  left: -900px;
+  right: -900px;
+  height: 150px;
+  opacity: .45;
+  filter: blur(1px);
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+.cloud-layer-back {
+  top: 74px;
+  background-image:
+    radial-gradient(ellipse at 80px 80px, #fff8 0 34px, transparent 35px),
+    radial-gradient(ellipse at 190px 70px, #fff7 0 42px, transparent 43px),
+    radial-gradient(ellipse at 320px 92px, #fff6 0 38px, transparent 39px);
+  background-size: 520px 150px;
+  animation: cloud-drift-slow 95s linear infinite;
+}
+
+.cloud-layer-front {
+  top: 132px;
+  opacity: .28;
+  background-image:
+    radial-gradient(ellipse at 110px 76px, #fff7 0 28px, transparent 29px),
+    radial-gradient(ellipse at 245px 90px, #fff6 0 34px, transparent 35px),
+    radial-gradient(ellipse at 430px 82px, #fff5 0 30px, transparent 31px);
+  background-size: 680px 150px;
+  animation: cloud-drift 60s linear infinite;
 }
 
 .sunset-band {
   position: absolute;
-  left: -160px;
-  right: -160px;
-  bottom: 185px;
-  height: 130px;
-  background: linear-gradient(90deg, #d8222f00, #f5bd2642 24%, #d14e3230 68%, #d8222f00);
-  filter: blur(12px);
+  left: -260px;
+  right: -260px;
+  bottom: 192px;
+  height: 150px;
+  background: linear-gradient(90deg, #d85d2b00, #f7c26a55 22%, #d45f3742 58%, #6b3c2d00);
+  filter: blur(16px);
+  animation: heat-shimmer 9s ease-in-out infinite alternate;
 }
 
-.range {
+.mesa-layer {
   position: absolute;
-  left: -240px;
-  right: -240px;
-  bottom: 176px;
-  height: 170px;
-  opacity: .85;
+  left: -900px;
+  right: -900px;
+  bottom: 155px;
+  background-repeat: repeat-x;
+  pointer-events: none;
 }
 
-.range-back {
-  background:
-    linear-gradient(135deg, transparent 0 24%, #4a6172 24% 34%, transparent 34% 46%, #394d60 46% 61%, transparent 61%),
-    linear-gradient(45deg, transparent 0 18%, #536775 18% 32%, transparent 32%);
+.mesa-layer-far {
+  height: 190px;
+  opacity: .86;
+  background-image: linear-gradient(180deg, #866f62, #493d39);
+  clip-path: polygon(0 72%, 7% 59%, 15% 62%, 23% 42%, 34% 43%, 41% 61%, 51% 54%, 59% 38%, 70% 40%, 77% 58%, 86% 52%, 100% 70%, 100% 100%, 0 100%);
+  animation: parallax-far 58s linear infinite;
 }
 
-.range-front {
-  bottom: 137px;
-  height: 120px;
+.mesa-layer-mid {
+  bottom: 122px;
+  height: 210px;
+  opacity: .96;
   background:
-    linear-gradient(135deg, transparent 0 20%, #263238 20% 36%, transparent 36% 48%, #1d292e 48% 67%, transparent 67%),
-    linear-gradient(45deg, transparent 0 16%, #304047 16% 36%, transparent 36%);
+    linear-gradient(180deg, #b77549 0%, #8a4a34 55%, #3b2722 100%),
+    repeating-linear-gradient(180deg, #ffffff14 0 3px, transparent 3px 24px);
+  background-blend-mode: overlay;
+  clip-path: polygon(0 76%, 6% 58%, 15% 57%, 21% 44%, 31% 46%, 36% 66%, 45% 53%, 54% 55%, 60% 37%, 72% 38%, 79% 58%, 91% 52%, 100% 68%, 100% 100%, 0 100%);
+  animation: parallax-mid 36s linear infinite;
+}
+
+.mesa-layer-near {
+  bottom: 92px;
+  height: 165px;
+  opacity: 1;
+  background:
+    linear-gradient(180deg, #c9834c 0%, #74402d 58%, #211615 100%),
+    repeating-linear-gradient(100deg, #0000 0 42px, #0000001f 42px 50px);
+  background-blend-mode: multiply;
+  clip-path: polygon(0 74%, 4% 66%, 12% 67%, 18% 48%, 29% 49%, 36% 69%, 47% 62%, 58% 41%, 69% 43%, 76% 65%, 88% 57%, 100% 73%, 100% 100%, 0 100%);
+  animation: parallax-near 22s linear infinite;
+}
+
+.desert-floor {
+  position: absolute;
+  left: -500px;
+  right: -500px;
+  bottom: 0;
+  height: 210px;
+  background:
+    radial-gradient(ellipse at 22% 36%, #d69a5c55 0 11%, transparent 30%),
+    radial-gradient(ellipse at 72% 42%, #8d5a3b55 0 13%, transparent 34%),
+    repeating-linear-gradient(8deg, #0000 0 52px, #1a0e0940 53px 58px),
+    linear-gradient(180deg, #8c5638 0%, #3a241c 58%, #090806 100%);
+  animation: desert-drift 18s linear infinite;
 }
 
 .rail-bed {
@@ -282,8 +357,10 @@ h1 {
   right: -300px;
   bottom: 70px;
   height: 154px;
-  background: linear-gradient(#3c352c, #16120d 68%, #090806);
-  transform: skewX(-10deg);
+  background:
+    repeating-linear-gradient(90deg, #00000020 0 34px, #d4a05726 34px 38px, #00000020 38px 76px),
+    linear-gradient(#4b3526, #17110d 68%, #090806);
+  transform: skewX(-4deg);
 }
 
 .rail,
@@ -1217,6 +1294,41 @@ h1 {
     transform: scale(.86);
     filter: blur(14px);
   }
+}
+
+@keyframes cloud-drift-slow {
+  from { transform: translateX(0); }
+  to { transform: translateX(520px); }
+}
+
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(680px); }
+}
+
+@keyframes parallax-far {
+  from { transform: translateX(0); }
+  to { transform: translateX(260px); }
+}
+
+@keyframes parallax-mid {
+  from { transform: translateX(0); }
+  to { transform: translateX(520px); }
+}
+
+@keyframes parallax-near {
+  from { transform: translateX(0); }
+  to { transform: translateX(820px); }
+}
+
+@keyframes desert-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 0 0, -420px 0, 0 0; }
+}
+
+@keyframes heat-shimmer {
+  from { opacity: .72; transform: translateX(-18px) scaleX(1); }
+  to { opacity: .92; transform: translateX(22px) scaleX(1.04); }
 }
 
 @media (max-width: 980px) {

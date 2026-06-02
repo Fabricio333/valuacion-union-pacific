@@ -91,9 +91,13 @@ function RailBackdrop() {
   return (
     <>
       <div className="world-sky" />
+      <div className="cloud-layer cloud-layer-back" />
+      <div className="cloud-layer cloud-layer-front" />
       <div className="sunset-band" />
-      <div className="range range-back" />
-      <div className="range range-front" />
+      <div className="mesa-layer mesa-layer-far" />
+      <div className="mesa-layer mesa-layer-mid" />
+      <div className="mesa-layer mesa-layer-near" />
+      <div className="desert-floor" />
       <div className="rail-bed" />
       <div className="rail rail-top" />
       <div className="rail rail-bottom" />
