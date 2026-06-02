@@ -184,19 +184,27 @@ h1 {
 .hero-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 22px;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+  width: 100%;
 }
 
 .hero-metrics span,
 .assumption-list span {
-  border: 1px solid #f5bd2670;
-  background: #11100dd9;
-  color: #ffe3a2;
+  border: 1px solid #7fa7c955;
+  background: linear-gradient(135deg, #142235e8, #0a111ce8);
+  color: #dcecff;
   border-radius: 999px;
-  padding: 8px 11px;
+  padding: 9px 13px;
   font-size: 12px;
   font-weight: 850;
+  box-shadow: 0 10px 26px #0005, inset 0 1px #ffffff18;
+}
+
+.hero-metrics span {
+  min-width: 132px;
+  text-align: center;
 }
 
 .rail-camera {
