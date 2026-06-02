@@ -402,7 +402,7 @@ h1 {
 
 .landing-mode .train-consist {
   opacity: .84;
-  animation: train-roll 18s ease-in-out infinite alternate;
+  animation: train-roll 8.5s ease-in-out infinite alternate;
 }
 
 .locomotive,
@@ -677,6 +677,23 @@ h1 {
 
 .wagon-body {
   margin-top: 8px;
+}
+
+
+.wagon-content {
+  display: none;
+}
+
+.wagon-label {
+  top: 50%;
+  transform: translateY(-50%);
+  justify-content: center;
+  text-align: center;
+  font-size: 24px;
+}
+
+.wagon-label span {
+  flex: 0 0 auto;
 }
 
 .cargo-line {
