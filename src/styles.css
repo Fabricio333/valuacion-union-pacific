@@ -501,162 +501,96 @@ h1 {
   --engine-red: #d7192d;
   --engine-red-deep: #8e111c;
   --engine-black: #10141b;
-  width: 540px;
+  width: 700px;
   height: 260px;
-  border: 3px solid #f0d17675;
-  border-radius: 12px 34px 12px 12px;
+  border: 0;
+  border-radius: 0;
   overflow: visible;
-  background:
-    linear-gradient(180deg, #ef2638 0 68%, #a70f1c 68% 100%);
-  box-shadow: inset 0 2px #ffffff50, inset 0 -42px #0000003d;
+  background: transparent;
 }
 
 .locomotive::before {
   content: "";
   position: absolute;
-  left: 24px;
-  right: 22px;
-  bottom: 34px;
-  height: 58px;
-  z-index: 1;
-  border-radius: 10px;
-  background: linear-gradient(#151922, #05070d 72%);
-  box-shadow: 0 2px 0 #ffffff12;
+  left: 28px;
+  right: 32px;
+  bottom: 0;
+  z-index: 3;
+  height: 66px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(180deg, #151922, #05070d);
+  box-shadow: inset 0 2px #ffffff1f, 0 8px 10px #0008;
 }
 
 .engine-long-hood {
   position: absolute;
-  left: 30px;
-  top: 40px;
+  left: 28px;
+  top: 0;
   z-index: 2;
-  width: 330px;
-  height: 150px;
-  border-radius: 7px 3px 0 0;
+  width: 450px;
+  height: 200px;
+  border-radius: 7px 2px 0 0;
   background:
-    linear-gradient(180deg, #1a202a 0 42%, var(--engine-black) 42% 100%),
-    repeating-linear-gradient(90deg, #ffffff12 0 2px, transparent 2px 34px);
-  box-shadow: inset 0 2px #ffffff20, inset 0 -14px #00000055;
+    linear-gradient(180deg, #202835 0 34%, var(--engine-black) 34% 100%),
+    linear-gradient(90deg, #0000002a, transparent 22%, transparent 78%, #00000033);
+  box-shadow: inset 0 2px #ffffff24, inset 0 -16px #00000042;
 }
 
 .engine-long-hood::after {
   content: "";
   position: absolute;
-  left: 56px;
-  top: -24px;
-  width: 26px;
-  height: 30px;
-  border-radius: 8px 8px 3px 3px;
+  left: 58px;
+  top: 12px;
+  width: 30px;
+  height: 34px;
+  border-radius: 6px 6px 2px 2px;
   background: #080a0f;
-  box-shadow: inset 0 2px #ffffff28;
+  box-shadow: inset 0 2px #ffffff24;
 }
 
 .hood-vents {
   position: absolute;
-  left: 28px;
-  top: 68px;
-  width: 82px;
-  height: 58px;
-  background: repeating-linear-gradient(90deg, #030509 0 7px, #202834 7px 12px);
-  opacity: .9;
-  box-shadow: inset 0 0 0 1px #ffffff14;
-}
-
-.engine-name {
-  position: absolute;
-  right: 20px;
-  top: 55px;
-  color: #f6f8fb;
-  font-size: 24px;
-  font-weight: 760;
-  letter-spacing: 0;
-  text-shadow: 0 3px 5px #000;
-  white-space: nowrap;
-}
-
-.engine-flag {
-  position: absolute;
-  right: 190px;
-  top: 76px;
-  width: 44px;
-  height: 30px;
-  overflow: hidden;
-  border: 1px solid #ffffff80;
-  background:
-    linear-gradient(90deg, #204a90 0 40%, transparent 40%),
-    repeating-linear-gradient(180deg, #ef2a36 0 4px, #fff 4px 8px);
-  box-shadow: 0 2px 3px #0008;
-}
-
-.engine-flag i {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: #fff;
-  left: 5px;
-  top: 5px;
-}
-
-.engine-flag i:nth-child(2) {
-  left: 12px;
-}
-
-.engine-flag i:nth-child(3) {
-  left: 5px;
-  top: 13px;
-}
-
-.engine-flag i:nth-child(4) {
-  left: 12px;
-  top: 13px;
+  left: 52px;
+  bottom: 38px;
+  width: 132px;
+  height: 48px;
+  background: repeating-linear-gradient(90deg, #030509 0 7px, #253040 7px 12px);
+  opacity: .86;
 }
 
 .engine-cab {
   position: absolute;
-  left: 340px;
-  top: 6px;
+  left: 466px;
+  top: 0;
   z-index: 3;
-  width: 150px;
-  height: 186px;
-  clip-path: polygon(0 23%, 17% 0, 76% 0, 100% 22%, 100% 100%, 0 100%);
-  background:
-    linear-gradient(135deg, #ff3346 0%, var(--engine-red) 48%, var(--engine-red-deep) 100%);
-  box-shadow: inset 0 2px #ffffff45, inset -12px 0 #00000016;
+  width: 168px;
+  height: 200px;
+  clip-path: polygon(0 24%, 16% 0, 82% 0, 100% 18%, 100% 100%, 0 100%);
+  background: linear-gradient(135deg, #ef3344 0%, var(--engine-red) 52%, var(--engine-red-deep) 100%);
+  box-shadow: inset 0 2px #ffffff36, inset -10px 0 #0000001f;
 }
 
 .number-board {
   position: absolute;
-  right: 36px;
-  top: 4px;
+  right: 30px;
+  top: 12px;
   display: grid;
   place-items: center;
-  width: 64px;
+  width: 62px;
   height: 24px;
   border-radius: 4px;
-  background: #ef2c3c;
-  color: #f7d063;
-  font-size: 13px;
+  border: 2px solid #ffffff36;
+  color: #ffe26a;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .04em;
-  box-shadow: inset 0 0 0 2px #ffffff38;
-}
-
-.cab-number {
-  position: absolute;
-  left: 24px;
-  top: 82px;
-  color: #f1c24f;
-  font-size: 38px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: 0;
-  text-shadow: 0 2px 0 #6e1017, 0 5px 7px #0008;
+  background: #e22b3a;
 }
 
 .cab-window {
   position: absolute;
-  top: 42px;
-  height: 42px;
+  top: 64px;
+  height: 48px;
   border: 3px solid #161a20;
   border-radius: 6px;
   background: linear-gradient(135deg, #dff9ff, #285b75 68%);
@@ -664,52 +598,35 @@ h1 {
 }
 
 .cab-window-side {
-  left: 24px;
-  width: 58px;
+  left: 26px;
+  width: 68px;
 }
 
 .cab-window-front {
-  right: 17px;
-  width: 36px;
-  transform: skewX(-7deg);
-}
-
-.lincoln-medallion {
-  position: absolute;
-  left: 24px;
-  bottom: 26px;
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 3px solid #d8c58b;
-  border-radius: 50%;
-  background: radial-gradient(circle, #f3eee0 0 56%, #b8a070 57% 100%);
-  color: #303640;
-  font-size: 13px;
-  font-weight: 950;
-  box-shadow: 0 3px 8px #0008;
+  right: 18px;
+  width: 42px;
+  transform: skewX(-8deg);
 }
 
 .nose {
   position: absolute;
-  right: -70px;
-  top: 74px;
-  z-index: 2;
-  width: 124px;
-  height: 116px;
-  background: linear-gradient(135deg, #f3293c, #8e111c 76%);
-  clip-path: polygon(0 0, 74% 13%, 100% 53%, 74% 100%, 0 100%);
-  filter: drop-shadow(10px 7px 10px #0008);
+  right: 0;
+  top: 42px;
+  z-index: 4;
+  width: 136px;
+  height: 158px;
+  background: linear-gradient(135deg, #df2937, #8e111c 82%);
+  clip-path: polygon(0 0, 72% 0, 100% 50%, 84% 100%, 0 100%);
+  filter: drop-shadow(7px 5px 8px #0008);
 }
 
 .headlight {
   position: absolute;
-  right: -50px;
-  top: 114px;
+  right: 18px;
+  top: 128px;
   z-index: 5;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border: 2px solid #2b1f1b;
   border-radius: 50%;
   background: #fff4a8;
@@ -724,28 +641,28 @@ h1 {
 }
 
 .side-stripe {
-  left: 0;
-  right: -58px;
-  top: 126px;
-  height: 18px;
-  background: linear-gradient(180deg, #fff 0 56%, #d8ad39 56% 74%, transparent 74%);
+  left: 22px;
+  right: 24px;
+  top: 150px;
+  height: 12px;
+  background: linear-gradient(180deg, #fff 0 48%, #d8ad39 48% 100%);
 }
 
 .lower-stripe {
-  left: 20px;
-  right: -48px;
-  bottom: 70px;
-  height: 12px;
-  background: linear-gradient(180deg, #fff 0 52%, #d8ad39 52% 100%);
+  left: 34px;
+  right: 46px;
+  bottom: 74px;
+  height: 8px;
+  background: #f5f7f8;
 }
 
 .running-board {
   position: absolute;
-  left: 18px;
-  right: -38px;
-  bottom: 55px;
+  left: 28px;
+  right: 32px;
+  bottom: 70px;
   z-index: 5;
-  height: 14px;
+  height: 12px;
   border-radius: 999px;
   background: #0a0c11;
   box-shadow: inset 0 1px #ffffff25;
@@ -759,47 +676,33 @@ h1 {
 }
 
 .handrail-long {
-  left: 18px;
-  right: -46px;
-  top: 119px;
-  height: 58px;
+  left: 26px;
+  right: 22px;
+  top: 147px;
+  height: 52px;
   border-top: 3px solid #eef2f5;
-  border-bottom: 3px solid #eef2f5;
 }
 
 .handrail-front {
-  right: -66px;
-  top: 83px;
-  width: 78px;
-  height: 114px;
+  right: 5px;
+  top: 76px;
+  width: 82px;
+  height: 118px;
   border-top: 3px solid #eef2f5;
   border-right: 3px solid #eef2f5;
   border-bottom: 3px solid #eef2f5;
-  transform: skewX(-10deg);
+  transform: skewX(-12deg);
 }
 
 .plow {
   position: absolute;
-  right: -92px;
-  bottom: -6px;
+  right: -10px;
+  bottom: 0;
   z-index: 4;
-  width: 118px;
-  height: 42px;
+  width: 116px;
+  height: 50px;
   background: linear-gradient(180deg, #252a32, #0b0d12);
   clip-path: polygon(0 0, 100% 32%, 82% 100%, 0 100%);
-}
-
-.engine-mark {
-  position: absolute;
-  left: 392px;
-  top: 146px;
-  z-index: 5;
-  color: #fff;
-  font-size: 9px;
-  font-weight: 950;
-  letter-spacing: .06em;
-  text-shadow: 0 3px 4px #000;
-  white-space: nowrap;
 }
 
 .wagon {
@@ -990,19 +893,22 @@ h1 {
 }
 
 .locomotive .w1 {
-  left: 64px;
+  left: 58px;
 }
 
 .locomotive .w2 {
-  right: 52px;
+  right: 112px;
 }
 
 .locomotive .w3 {
-  left: 254px;
+  left: 174px;
 }
 
 .locomotive .wheel {
   z-index: 7;
+  bottom: -26px;
+  width: 48px;
+  height: 48px;
 }
 
 .wheel {
@@ -1628,19 +1534,15 @@ h1 {
     opacity: 0;
     transform: translate3d(5600px, 0, 0);
   }
-  58% {
+  48% {
     opacity: 0;
-    transform: translate3d(5600px, 0, 0);
+    transform: translate3d(-2400px, 0, 0);
   }
-  58.1% {
-    opacity: 0;
-    transform: translate3d(-6200px, 0, 0);
-  }
-  59% {
+  48.1% {
     opacity: 1;
-    transform: translate3d(-6200px, 0, 0);
+    transform: translate3d(-2400px, 0, 0);
   }
-  92% {
+  76% {
     opacity: 1;
     transform: translate3d(0, 0, 0);
   }

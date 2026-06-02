@@ -164,21 +164,12 @@ function Locomotive() {
   return (
     <div className="locomotive" aria-hidden="true">
       <div className="engine-long-hood">
-        <div className="engine-name">Abraham Lincoln</div>
-        <div className="engine-flag">
-          <i />
-          <i />
-          <i />
-          <i />
-        </div>
         <div className="hood-vents" />
       </div>
       <div className="engine-cab">
         <div className="number-board">1616</div>
-        <div className="cab-number">1616</div>
         <div className="cab-window cab-window-side" />
         <div className="cab-window cab-window-front" />
-        <div className="lincoln-medallion">AL</div>
       </div>
       <div className="headlight" />
       <div className="nose" />
@@ -188,7 +179,6 @@ function Locomotive() {
       <div className="handrail handrail-long" />
       <div className="handrail handrail-front" />
       <div className="plow" />
-      <div className="engine-mark">UNION PACIFIC</div>
       <div className="wheel w1" />
       <div className="wheel w2" />
       <div className="wheel w3" />
@@ -199,14 +189,13 @@ function Locomotive() {
 type TrainWorldProps = {
   selectedIndex: number
   viewIndex: number
-  trackViewIndex: number
   phase: Phase
   slides: Slide[]
   trainOffsetX: number
   onSelect: (index: number) => void
 }
 
-function TrainWorld({ selectedIndex, viewIndex, trackViewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
+function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
   const wagonStart = TRAIN.startX
   const firstSlideX = wagonStart + (slides.length - 1) * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
   const frozenTrainOffset = phase === 'overview' ? 0 : trainOffsetX
@@ -217,7 +206,7 @@ function TrainWorld({ selectedIndex, viewIndex, trackViewIndex, phase, slides, t
     return wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + extraOffsetX
   }
   const trainFocusX = focusXForView(viewIndex, frozenTrainOffset)
-  const trackFocusX = focusXForView(trackViewIndex)
+  const trackFocusX = firstSlideX
   const wagonCenterY = TRAIN.top + TRAIN.wagonHeight / 2
   const trainBottomY = TRAIN.top + TRAIN.wagonHeight + 26
   const trackBottomY = TRAIN.top + TRAIN.wagonHeight + 20
@@ -343,7 +332,6 @@ function App() {
   const [index, setIndex] = useState(-1)
   const [phase, setPhase] = useState<Phase>('overview')
   const [viewIndex, setViewIndex] = useState(-1)
-  const [trackViewIndex, setTrackViewIndex] = useState(-1)
   const [trainOffsetX, setTrainOffsetX] = useState(0)
   const transitionTimers = useRef<number[]>([])
   const slides: Slide[] = useMemo(
@@ -560,13 +548,11 @@ function App() {
         if (index < 0) {
           setPhase('overview')
           setViewIndex(-1)
-          setTrackViewIndex(-1)
           return
         }
 
         setPhase('zooming-out')
         setViewIndex(index)
-        setTrackViewIndex(index)
         queue(() => {
           setPhase('moving')
           setViewIndex(-1)
@@ -574,7 +560,6 @@ function App() {
         queue(() => {
           setIndex(-1)
           setPhase('overview')
-          setTrackViewIndex(-1)
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
         return
       }
@@ -583,7 +568,6 @@ function App() {
         setTrainOffsetX(0)
         setPhase('zooming-out')
         setViewIndex(index)
-        setTrackViewIndex(index)
         queue(() => {
           setPhase('moving')
           setViewIndex(next)
@@ -595,14 +579,12 @@ function App() {
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
         queue(() => {
           setPhase('fullscreen')
-          setTrackViewIndex(next)
         }, TRANSITION_MS.zoomOut + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
         return
       }
 
       const currentTrainOffset = readIdleTrainOffset()
       setTrainOffsetX(currentTrainOffset)
-      setTrackViewIndex(-1)
 
       setPhase('moving')
       setViewIndex(next)
@@ -613,7 +595,6 @@ function App() {
       }, TRANSITION_MS.move)
       queue(() => {
         setPhase('fullscreen')
-        setTrackViewIndex(next)
       }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
     },
     [index, phase, slides.length],
@@ -676,7 +657,6 @@ function App() {
         <TrainWorld
           selectedIndex={viewIndex >= 0 ? viewIndex : index}
           viewIndex={viewIndex}
-          trackViewIndex={trackViewIndex}
           phase={phase}
           slides={slides}
           trainOffsetX={trainOffsetX}

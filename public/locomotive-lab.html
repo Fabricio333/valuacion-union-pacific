@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Locomotive Lab</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, #0a0d12 0%, #161d27 52%, #090a0d 100%);
+        color: #edf3fb;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .stage {
+        position: relative;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 40px;
+      }
+
+      .lab-frame {
+        position: relative;
+        width: min(1400px, calc(100vw - 48px));
+        height: 520px;
+        border: 1px solid #ffffff1f;
+        border-radius: 12px;
+        background:
+          linear-gradient(180deg, #101722 0%, #182333 58%, #07090d 100%);
+        box-shadow: 0 30px 80px #000b;
+        overflow: hidden;
+      }
+
+      .roof-guide {
+        position: absolute;
+        left: 92px;
+        right: 92px;
+        top: 122px;
+        height: 1px;
+        background: #f5bd26;
+        opacity: .55;
+      }
+
+      .roof-guide::after {
+        content: "wagon roof height";
+        position: absolute;
+        top: -24px;
+        left: 0;
+        color: #f5bd26;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+
+      .wagon-reference {
+        position: absolute;
+        left: 72px;
+        bottom: 145px;
+        z-index: 3;
+        width: 470px;
+        height: 260px;
+        border: 4px solid #f5bd2670;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #283850, #121d2d);
+        box-shadow: inset 0 2px #ffffff40, inset 0 -44px #00000042;
+        filter: drop-shadow(0 34px 28px #000c);
+      }
+
+      .wagon-reference::before {
+        content: "";
+        position: absolute;
+        left: 28px;
+        right: 28px;
+        bottom: 44px;
+        height: 7px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #f5bd26, #d8222f);
+      }
+
+      .locomotive-wrap {
+        position: absolute;
+        left: 584px;
+        bottom: 145px;
+        z-index: 3;
+        width: 700px;
+        height: 260px;
+        filter: drop-shadow(0 34px 28px #000c);
+      }
+
+      .rail,
+      .ties {
+        position: absolute;
+        left: -260px;
+        right: -260px;
+      }
+
+      .rail {
+        z-index: 2;
+        height: 12px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #f4f7fa 0%, #a9b0b7 28%, #5e6670 58%, #22282f 100%);
+        box-shadow: 0 5px 10px #0009, inset 0 1px #ffffffc7;
+      }
+
+      .rail-top {
+        bottom: 171px;
+      }
+
+      .rail-bottom {
+        bottom: 123px;
+      }
+
+      .ties {
+        z-index: 1;
+        bottom: 115px;
+        height: 84px;
+        background: repeating-linear-gradient(
+          90deg,
+          transparent 0 34px,
+          #2a190f 34px 56px,
+          #5a3520 56px 61px,
+          #1a100a 61px 66px,
+          transparent 66px 86px
+        );
+        opacity: .95;
+      }
+
+      .locomotive {
+        --engine-red: #d7192d;
+        --engine-red-deep: #8e111c;
+        --engine-black: #10141b;
+        position: relative;
+        width: 700px;
+        height: 260px;
+        border: 0;
+        border-radius: 0;
+        overflow: visible;
+        background: transparent;
+      }
+
+      .locomotive::before {
+        content: "";
+        position: absolute;
+        left: 28px;
+        right: 32px;
+        bottom: 0;
+        z-index: 3;
+        height: 66px;
+        border-radius: 0 0 8px 8px;
+        background: linear-gradient(180deg, #151922, #05070d);
+        box-shadow: inset 0 2px #ffffff1f, 0 8px 10px #0008;
+      }
+
+      .engine-long-hood {
+        position: absolute;
+        left: 28px;
+        top: 0;
+        z-index: 2;
+        width: 450px;
+        height: 200px;
+        border-radius: 7px 2px 0 0;
+        background:
+          linear-gradient(180deg, #202835 0 34%, var(--engine-black) 34% 100%),
+          linear-gradient(90deg, #0000002a, transparent 22%, transparent 78%, #00000033);
+        box-shadow: inset 0 2px #ffffff24, inset 0 -16px #00000042;
+      }
+
+      .engine-long-hood::after {
+        content: "";
+        position: absolute;
+        left: 58px;
+        top: 12px;
+        width: 30px;
+        height: 34px;
+        border-radius: 6px 6px 2px 2px;
+        background: #080a0f;
+        box-shadow: inset 0 2px #ffffff24;
+      }
+
+      .hood-vents {
+        position: absolute;
+        left: 52px;
+        bottom: 38px;
+        width: 132px;
+        height: 48px;
+        background: repeating-linear-gradient(90deg, #030509 0 7px, #253040 7px 12px);
+        opacity: .86;
+      }
+
+      .engine-cab {
+        position: absolute;
+        left: 456px;
+        top: 0;
+        z-index: 3;
+        width: 172px;
+        height: 200px;
+        clip-path: polygon(0 24%, 16% 0, 100% 0, 100% 100%, 0 100%);
+        background: linear-gradient(135deg, #ef3344 0%, var(--engine-red) 52%, var(--engine-red-deep) 100%);
+        box-shadow: inset 0 2px #ffffff36, inset -10px 0 #0000001f;
+      }
+
+      .cab-window {
+        position: absolute;
+        top: 72px;
+        height: 54px;
+        border: 3px solid #161a20;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #dff9ff, #285b75 68%);
+        box-shadow: inset 0 2px #ffffffa8;
+      }
+
+      .cab-window-side {
+        left: 32px;
+        width: 82px;
+      }
+
+      .nose {
+        position: absolute;
+        right: 0;
+        top: 92px;
+        z-index: 4;
+        width: 128px;
+        height: 108px;
+        background: linear-gradient(135deg, #df2937, #b81f2a 68%, #8e111c 100%);
+        box-shadow: inset -10px 0 #00000024;
+      }
+
+      .headlight {
+        position: absolute;
+        right: 18px;
+        top: 134px;
+        z-index: 5;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #2b1f1b;
+        border-radius: 50%;
+        background: #fff4a8;
+        box-shadow: 0 0 14px #ffe66d, 26px 0 42px #ffe66d70;
+      }
+
+      .side-stripe {
+        position: absolute;
+        z-index: 4;
+        pointer-events: none;
+      }
+
+      .side-stripe {
+        left: 28px;
+        right: 28px;
+        bottom: 44px;
+        height: 7px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #f5bd26, #d8222f);
+      }
+
+      .plow {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        z-index: 4;
+        width: 128px;
+        height: 42px;
+        background: linear-gradient(180deg, #252a32, #0b0d12);
+        box-shadow: inset -10px 0 #00000042, inset 0 1px #ffffff1a;
+      }
+
+      .wheel {
+        position: absolute;
+        bottom: -26px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #f5bd26 0 17%, #111 18% 54%, #9098a3 55% 62%, #07080b 63%);
+      }
+
+      .wheel::after {
+        content: "";
+        position: absolute;
+        inset: 13px;
+        border-radius: 50%;
+        border: 4px solid #f5bd2670;
+      }
+
+      .locomotive .w1 {
+        left: 58px;
+      }
+
+      .locomotive .wheel {
+        z-index: 8;
+      }
+
+      .locomotive .w2 {
+        right: 112px;
+      }
+
+      .locomotive .w3 {
+        left: 174px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage">
+      <section class="lab-frame">
+        <div class="roof-guide"></div>
+        <div class="wagon-reference">
+          <div class="wheel" style="left: 58px"></div>
+          <div class="wheel" style="right: 62px"></div>
+        </div>
+        <div class="locomotive-wrap">
+          <div class="locomotive" aria-label="Static locomotive preview">
+            <div class="engine-long-hood">
+              <div class="hood-vents"></div>
+            </div>
+            <div class="engine-cab">
+              <div class="cab-window cab-window-side"></div>
+            </div>
+            <div class="headlight"></div>
+            <div class="nose"></div>
+            <div class="side-stripe"></div>
+            <div class="plow"></div>
+            <div class="wheel w1"></div>
+            <div class="wheel w2"></div>
+            <div class="wheel w3"></div>
+          </div>
+        </div>
+        <div class="ties"></div>
+        <div class="rail rail-top"></div>
+        <div class="rail rail-bottom"></div>
+      </section>
+    </main>
+  </body>
+</html>
