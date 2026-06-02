@@ -131,9 +131,9 @@ main {
     linear-gradient(90deg, #080b11d8 0%, #10131ba8 42%, #090b10e6 100%),
     linear-gradient(180deg, #00000050, #0000007c),
     url('/backgrounds/landing-rail.webp') center / cover no-repeat;
-  transform: scale(1.04);
+  transform: scale(1.02);
   filter: saturate(.9) contrast(1.05);
-  opacity: .74;
+  opacity: .92;
 }
 
 .landing-photo-backdrop::after {
@@ -260,32 +260,19 @@ h1 {
 
 .landing-mode .rail-world {
   animation: none;
+  top: 70%;
 }
 
 .world-sky {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at 18% 20%, #fff6d680 0 6%, transparent 18%),
-    linear-gradient(180deg, #7ea7cf 0%, #d9b07a 32%, #a66344 56%, #241b16 100%);
-  opacity: .62;
+  display: none;
 }
 
 .world-sky::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(#ffffff10 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff0c 1px, transparent 1px);
-  background-size: 120px 120px;
-  transform: perspective(780px) rotateX(62deg) translateY(180px);
-  transform-origin: center bottom;
-  opacity: .28;
-  animation: none;
+  display: none;
 }
 
 .cloud-layer {
+  display: none;
   position: absolute;
   left: -900px;
   right: -900px;
@@ -318,6 +305,7 @@ h1 {
 }
 
 .sunset-band {
+  display: none;
   position: absolute;
   left: -260px;
   right: -260px;
@@ -329,6 +317,7 @@ h1 {
 }
 
 .mesa-layer {
+  display: none;
   position: absolute;
   left: -900px;
   right: -900px;
@@ -370,6 +359,7 @@ h1 {
 }
 
 .desert-floor {
+  display: none;
   position: absolute;
   left: -500px;
   right: -500px;
@@ -387,8 +377,8 @@ h1 {
   position: absolute;
   left: -300px;
   right: -300px;
-  bottom: 70px;
-  height: 154px;
+  bottom: 54px;
+  height: 108px;
   background:
     repeating-linear-gradient(90deg, #00000020 0 34px, #d4a05726 34px 38px, #00000020 38px 76px),
     linear-gradient(#4b3526, #17110d 68%, #090806);
@@ -409,16 +399,16 @@ h1 {
 }
 
 .rail-top {
-  bottom: 164px;
+  bottom: 132px;
 }
 
 .rail-bottom {
-  bottom: 104px;
+  bottom: 86px;
 }
 
 .ties {
-  bottom: 96px;
-  height: 92px;
+  bottom: 78px;
+  height: 72px;
   background: repeating-linear-gradient(90deg, transparent 0 34px, #17100b 34px 56px, transparent 56px 86px);
   opacity: .95;
 }
@@ -1540,18 +1530,20 @@ h1 {
   }
 
   .controls {
-    width: calc(100% - 24px);
-    bottom: 16px;
-    justify-content: space-between;
-    gap: 8px;
+    width: auto;
+    right: 10px;
+    bottom: 12px;
+    justify-content: flex-end;
+    gap: 6px;
   }
 
   .controls button {
-    padding: 9px 10px;
+    padding: 8px 9px;
+    font-size: 10px;
   }
 
   .controls .restart-button {
-    max-width: 118px;
+    max-width: 96px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
