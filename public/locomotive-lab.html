@@ -135,9 +135,13 @@
       }
 
       .locomotive {
-        --engine-red: #d7192d;
-        --engine-red-deep: #8e111c;
-        --engine-black: #10141b;
+        --engine-yellow: #f4c52e;
+        --engine-yellow-deep: #d79d1f;
+        --engine-gray: #8e9aa3;
+        --engine-gray-dark: #5d6871;
+        --engine-red: #c5222f;
+        --engine-blue: #566f86;
+        --engine-black: #11161c;
         position: relative;
         width: 700px;
         height: 260px;
@@ -150,94 +154,143 @@
       .locomotive::before {
         content: "";
         position: absolute;
-        left: 28px;
-        right: 32px;
+        left: 22px;
+        right: 58px;
         bottom: 0;
         z-index: 3;
-        height: 66px;
-        border-radius: 0 0 8px 8px;
-        background: linear-gradient(180deg, #151922, #05070d);
-        box-shadow: inset 0 2px #ffffff1f, 0 8px 10px #0008;
+        height: 64px;
+        border-radius: 0 0 4px 4px;
+        background:
+          linear-gradient(180deg, #151b22 0 20%, #05080c 20% 100%),
+          linear-gradient(90deg, #0a0d12, #202833 18%, #202833 82%, #0a0d12);
+        box-shadow: inset 0 3px #2d3640, 0 8px 10px #0008;
       }
 
       .engine-long-hood {
         position: absolute;
         left: 28px;
-        top: 0;
+        top: 20px;
         z-index: 2;
-        width: 450px;
-        height: 200px;
-        border-radius: 7px 2px 0 0;
+        width: 486px;
+        height: 170px;
+        border-radius: 4px 0 0 0;
         background:
-          linear-gradient(180deg, #202835 0 34%, var(--engine-black) 34% 100%),
-          linear-gradient(90deg, #0000002a, transparent 22%, transparent 78%, #00000033);
-        box-shadow: inset 0 2px #ffffff24, inset 0 -16px #00000042;
+          linear-gradient(180deg, var(--engine-gray) 0 34px, var(--engine-red) 34px 39px, var(--engine-yellow) 39px 100%),
+          linear-gradient(90deg, #0000001f, transparent 18%, transparent 78%, #00000024);
+        box-shadow: inset 0 2px #ffffff50, inset 0 -16px #a678162e, inset -1px 0 #8a6b1f;
+      }
+
+      .engine-long-hood::before {
+        content: "";
+        position: absolute;
+        left: 28px;
+        top: -9px;
+        width: 146px;
+        height: 14px;
+        border-radius: 5px 5px 0 0;
+        background:
+          repeating-linear-gradient(90deg, #343c43 0 5px, #15191f 5px 9px),
+          #303941;
+        box-shadow:
+          222px 2px 0 -2px #303941,
+          266px 2px 0 -2px #303941,
+          330px 2px 0 -1px #303941;
       }
 
       .engine-long-hood::after {
         content: "";
         position: absolute;
-        left: 58px;
-        top: 12px;
-        width: 30px;
-        height: 34px;
-        border-radius: 6px 6px 2px 2px;
-        background: #080a0f;
-        box-shadow: inset 0 2px #ffffff24;
+        left: 182px;
+        top: 51px;
+        width: 54px;
+        height: 116px;
+        border: 1px solid #8c721f75;
+        box-shadow:
+          58px 0 0 -1px #e0b526,
+          58px 0 0 0 #8c721f75,
+          116px 0 0 -1px #e0b526,
+          116px 0 0 0 #8c721f75,
+          174px 0 0 -1px #e0b526,
+          174px 0 0 0 #8c721f75;
+        background:
+          linear-gradient(90deg, transparent 26px, #8c721f75 26px 28px, transparent 28px),
+          linear-gradient(180deg, transparent 54px, #8c721f75 54px 56px, transparent 56px);
+        opacity: .72;
       }
 
       .hood-vents {
         position: absolute;
-        left: 52px;
-        bottom: 38px;
-        width: 132px;
-        height: 48px;
-        background: repeating-linear-gradient(90deg, #030509 0 7px, #253040 7px 12px);
-        opacity: .86;
+        top: 62px;
+        width: 124px;
+        height: 42px;
+        background:
+          repeating-linear-gradient(90deg, #5d5440 0 4px, #2b2925 4px 7px, transparent 7px 11px),
+          linear-gradient(180deg, #00000018, transparent);
+        opacity: .72;
+      }
+
+      .hood-vents-left {
+        left: 36px;
+      }
+
+      .hood-vents-right {
+        right: 26px;
+        top: 42px;
+        width: 98px;
+        height: 36px;
       }
 
       .engine-cab {
         position: absolute;
-        left: 456px;
-        top: 0;
+        right: 94px;
+        top: 20px;
         z-index: 3;
-        width: 172px;
-        height: 200px;
-        clip-path: polygon(0 24%, 16% 0, 100% 0, 100% 100%, 0 100%);
-        background: linear-gradient(135deg, #ef3344 0%, var(--engine-red) 52%, var(--engine-red-deep) 100%);
-        box-shadow: inset 0 2px #ffffff36, inset -10px 0 #0000001f;
+        width: 122px;
+        height: 170px;
+        clip-path: polygon(0 0, 84% 0, 100% 28%, 100% 100%, 0 100%);
+        background:
+          linear-gradient(180deg, var(--engine-gray) 0 34px, var(--engine-red) 34px 39px, var(--engine-yellow) 39px 100%);
+        box-shadow: inset 0 2px #ffffff52, inset -8px 0 #0000001c, inset 1px 0 #8a6b1f;
       }
 
       .cab-window {
         position: absolute;
-        top: 72px;
-        height: 54px;
-        border: 3px solid #161a20;
-        border-radius: 7px;
-        background: linear-gradient(135deg, #dff9ff, #285b75 68%);
+        top: 48px;
+        height: 44px;
+        border: 4px solid #5f6971;
+        border-radius: 4px;
+        background: linear-gradient(135deg, #dfe9ec 0 16%, #62818f 17% 46%, #1c3440 47% 100%);
         box-shadow: inset 0 2px #ffffffa8;
       }
 
       .cab-window-side {
-        left: 32px;
-        width: 82px;
+        left: 16px;
+        width: 50px;
+      }
+
+      .cab-window-front {
+        right: 10px;
+        width: 26px;
+        transform: skewX(15deg);
       }
 
       .nose {
         position: absolute;
-        right: 0;
-        top: 92px;
+        right: 24px;
+        top: 82px;
         z-index: 4;
-        width: 128px;
+        width: 112px;
         height: 108px;
-        background: linear-gradient(135deg, #df2937, #b81f2a 68%, #8e111c 100%);
-        box-shadow: inset -10px 0 #00000024;
+        border-radius: 0 12px 14px 0;
+        background:
+          linear-gradient(180deg, var(--engine-yellow) 0 27px, var(--engine-red) 27px 32px, var(--engine-yellow) 32px 100%);
+        box-shadow: inset -10px 0 #00000020, inset 0 2px #ffffff2c;
       }
 
       .headlight {
         position: absolute;
-        right: 18px;
-        top: 134px;
+        right: 42px;
+        top: 106px;
         z-index: 5;
         width: 16px;
         height: 16px;
@@ -255,20 +308,190 @@
 
       .side-stripe {
         left: 28px;
-        right: 28px;
-        bottom: 44px;
-        height: 7px;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #f5bd26, #d8222f);
+        right: 58px;
+        top: 57px;
+        height: 5px;
+        background: var(--engine-red);
+        box-shadow: 0 5px #5c6670;
+      }
+
+      .lower-stripe {
+        position: absolute;
+        left: 34px;
+        right: 72px;
+        bottom: 78px;
+        z-index: 5;
+        height: 3px;
+        background: #647480;
+        box-shadow: 0 24px #10151b;
+      }
+
+      .running-board {
+        position: absolute;
+        left: 0;
+        right: 46px;
+        bottom: 58px;
+        z-index: 6;
+        height: 16px;
+        background: linear-gradient(180deg, #202830, #080b10 74%);
+        box-shadow: inset 0 2px #46515c, 0 4px 6px #0008;
+      }
+
+      .handrail {
+        position: absolute;
+        z-index: 7;
+        border-color: var(--engine-blue);
+        pointer-events: none;
+      }
+
+      .handrail-long {
+        left: 38px;
+        top: 132px;
+        width: 486px;
+        height: 68px;
+        border-top: 4px solid var(--engine-blue);
+        border-left: 4px solid var(--engine-blue);
+        border-right: 4px solid var(--engine-blue);
+        border-radius: 5px 5px 0 0;
+        background: repeating-linear-gradient(90deg, transparent 0 40px, var(--engine-blue) 40px 44px, transparent 44px 80px);
+      }
+
+      .handrail-front,
+      .handrail-rear {
+        width: 38px;
+        height: 72px;
+        top: 129px;
+        border-top: 4px solid var(--engine-blue);
+        border-bottom: 4px solid var(--engine-blue);
+        background:
+          linear-gradient(90deg, transparent 0 14px, var(--engine-blue) 14px 18px, transparent 18px),
+          repeating-linear-gradient(180deg, transparent 0 21px, var(--engine-blue) 21px 25px, transparent 25px 43px);
+      }
+
+      .handrail-front {
+        right: 8px;
+        border-right: 4px solid var(--engine-blue);
+      }
+
+      .handrail-rear {
+        left: 2px;
+        border-left: 4px solid var(--engine-blue);
+      }
+
+      .roof-horn {
+        position: absolute;
+        left: 328px;
+        top: 4px;
+        z-index: 7;
+        width: 42px;
+        height: 20px;
+        border-radius: 2px;
+        background: #12161c;
+        clip-path: polygon(0 30%, 28% 30%, 28% 0, 70% 44%, 100% 12%, 100% 88%, 70% 56%, 28% 100%, 28% 70%, 0 70%);
+      }
+
+      .center-tank {
+        position: absolute;
+        left: 280px;
+        bottom: 0;
+        z-index: 4;
+        width: 174px;
+        height: 56px;
+        border-radius: 0 0 8px 8px;
+        background:
+          linear-gradient(90deg, transparent 0 18%, #6d767f 18% 78%, transparent 78%),
+          linear-gradient(180deg, #88939c, #5f6871 70%, #363d45);
+        box-shadow: inset 0 2px #aeb7bf, inset 0 -8px #0000002b;
+      }
+
+      .flag-decal {
+        position: absolute;
+        left: 206px;
+        top: 76px;
+        z-index: 5;
+        width: 150px;
+        height: 62px;
+        opacity: .86;
+        transform: skewX(-7deg) rotate(-2deg);
+        background:
+          repeating-linear-gradient(180deg, #c9232d 0 7px, #f8f0d4 7px 14px);
+        clip-path: polygon(0 18%, 23% 8%, 45% 18%, 67% 10%, 100% 18%, 93% 78%, 69% 70%, 46% 84%, 22% 73%, 0 87%);
+        filter: drop-shadow(0 2px 1px #0005);
+      }
+
+      .flag-decal::before {
+        content: "";
+        position: absolute;
+        left: 8px;
+        top: 10px;
+        width: 44px;
+        height: 28px;
+        border-radius: 2px;
+        background:
+          radial-gradient(circle, #f8f0d4 0 1px, transparent 1.6px) 0 0 / 8px 7px,
+          #2d4e7c;
+        clip-path: polygon(0 9%, 30% 0, 100% 9%, 95% 91%, 30% 82%, 0 100%);
+      }
+
+      .flag-decal::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #ffffff26 0 18%, transparent 18% 58%, #00000016 58% 100%);
+        clip-path: inherit;
+      }
+
+      .building-america {
+        position: absolute;
+        right: 174px;
+        top: 107px;
+        z-index: 8;
+        color: #485b70;
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .union-badge {
+        position: absolute;
+        right: 142px;
+        top: 104px;
+        z-index: 8;
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 29px;
+        border: 2px solid #5a6b7a;
+        border-radius: 5px 5px 9px 9px;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 900;
+        background: linear-gradient(180deg, #234b82 0 38%, #f8f2df 38% 48%, #c9232d 48%);
+      }
+
+      .engine-number {
+        position: absolute;
+        right: 42px;
+        top: 112px;
+        z-index: 8;
+        color: var(--engine-red);
+        font-size: 29px;
+        line-height: 1;
+        font-weight: 950;
+        letter-spacing: .02em;
+        text-shadow: 1px 0 #6d747b, -1px 1px #6d747b;
       }
 
       .plow {
         position: absolute;
-        right: 0;
+        right: 14px;
         bottom: 0;
         z-index: 4;
-        width: 128px;
+        width: 102px;
         height: 42px;
+        clip-path: polygon(16% 0, 100% 0, 100% 100%, 0 100%);
         background: linear-gradient(180deg, #252a32, #0b0d12);
         box-shadow: inset -10px 0 #00000042, inset 0 1px #ffffff1a;
       }
@@ -317,15 +540,28 @@
         </div>
         <div class="locomotive-wrap">
           <div class="locomotive" aria-label="Static locomotive preview">
+            <div class="roof-horn"></div>
             <div class="engine-long-hood">
-              <div class="hood-vents"></div>
+              <div class="hood-vents hood-vents-left"></div>
+              <div class="hood-vents hood-vents-right"></div>
+              <div class="flag-decal"></div>
             </div>
             <div class="engine-cab">
               <div class="cab-window cab-window-side"></div>
+              <div class="cab-window cab-window-front"></div>
             </div>
             <div class="headlight"></div>
             <div class="nose"></div>
+            <div class="building-america">Building America</div>
+            <div class="union-badge">UP</div>
+            <div class="engine-number">7941</div>
             <div class="side-stripe"></div>
+            <div class="lower-stripe"></div>
+            <div class="running-board"></div>
+            <div class="handrail handrail-long"></div>
+            <div class="handrail handrail-front"></div>
+            <div class="handrail handrail-rear"></div>
+            <div class="center-tank"></div>
             <div class="plow"></div>
             <div class="wheel w1"></div>
             <div class="wheel w2"></div>

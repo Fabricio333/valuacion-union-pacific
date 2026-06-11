@@ -163,21 +163,28 @@ function RailBackdrop() {
 function Locomotive() {
   return (
     <div className="locomotive" aria-hidden="true">
+      <div className="roof-horn" />
       <div className="engine-long-hood">
-        <div className="hood-vents" />
+        <div className="hood-vents hood-vents-left" />
+        <div className="hood-vents hood-vents-right" />
+        <div className="flag-decal" />
       </div>
       <div className="engine-cab">
-        <div className="number-board">1616</div>
         <div className="cab-window cab-window-side" />
         <div className="cab-window cab-window-front" />
       </div>
       <div className="headlight" />
       <div className="nose" />
+      <div className="building-america">Building America</div>
+      <div className="union-badge">UP</div>
+      <div className="engine-number">7941</div>
       <div className="side-stripe" />
       <div className="lower-stripe" />
       <div className="running-board" />
       <div className="handrail handrail-long" />
       <div className="handrail handrail-front" />
+      <div className="handrail handrail-rear" />
+      <div className="center-tank" />
       <div className="plow" />
       <div className="wheel w1" />
       <div className="wheel w2" />
