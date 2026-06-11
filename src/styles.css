@@ -511,7 +511,8 @@ h1 {
   border-radius: 0;
   overflow: visible;
   background: transparent;
-  transform: scaleX(-1);
+  transform: scaleX(-1) scaleY(1.06);
+  transform-origin: center bottom;
 }
 
 .locomotive::before {
