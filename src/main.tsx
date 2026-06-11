@@ -62,7 +62,7 @@ const sensitivity = [
 const TRAIN = {
   startX: 220,
   top: 300,
-  engineWidth: 530,
+  engineWidth: 700,
   wagonWidth: 470,
   wagonHeight: 260,
   gap: 42,
@@ -203,14 +203,13 @@ type TrainWorldProps = {
 }
 
 function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onSelect }: TrainWorldProps) {
-  const wagonStart = TRAIN.startX
-  const firstSlideX = wagonStart + (slides.length - 1) * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2
+  const wagonStart = TRAIN.startX + TRAIN.engineWidth + TRAIN.gap
+  const firstSlideX = wagonStart + TRAIN.wagonWidth / 2
   const frozenTrainOffset = phase === 'overview' ? 0 : trainOffsetX
   const focusXForView = (targetIndex: number, extraOffsetX = 0) => {
     if (targetIndex === -1) return firstSlideX + extraOffsetX
 
-    const visualSlot = slides.length - 1 - targetIndex
-    return wagonStart + visualSlot * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + extraOffsetX
+    return wagonStart + targetIndex * (TRAIN.wagonWidth + TRAIN.gap) + TRAIN.wagonWidth / 2 + extraOffsetX
   }
   const trainFocusX = focusXForView(viewIndex, frozenTrainOffset)
   const trackFocusX = firstSlideX
@@ -255,9 +254,8 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onS
               transform: frozenTrainOffset ? `translate3d(${frozenTrainOffset}px, 0, 0)` : undefined,
             }}
           >
-            {slides.map((_, visualIndex) => {
-              const i = slides.length - 1 - visualIndex
-              const slide = slides[i]
+            <Locomotive />
+            {slides.map((slide, i) => {
               return (
                 <button
                   className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
@@ -287,7 +285,6 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onS
                 </button>
               )
             })}
-            <Locomotive />
           </div>
         </div>
       </div>
