@@ -7,7 +7,6 @@ import {
   Building2,
   Gauge,
   Landmark,
-  ShieldAlert,
   TrainFront,
   TrendingUp,
 } from 'lucide-react'
@@ -41,22 +40,9 @@ const wagonPalettes = [
   { base: '#283850', deep: '#121d2d', glow: '#6f8fb8' },
   { base: '#1f4f45', deep: '#0f221f', glow: '#5eb19e' },
   { base: '#5b412a', deep: '#21140d', glow: '#d39a57' },
-  { base: '#39445c', deep: '#111722', glow: '#8ca0c6' },
+  { base: '#4f38a7', deep: '#17122f', glow: '#9675ff' },
   { base: '#65303a', deep: '#241016', glow: '#d46a79' },
-]
-
-const money = ['US$ 24.1B', 'US$ 12.7B', '52.6%', 'US$ 6.3B']
-const ratios = [
-  ['EV / EBITDA', '12.4x', 'Peer avg. 11.8x'],
-  ['P / E', '20.6x', 'Premium por moat'],
-  ['Deuda neta / EBITDA', '2.6x', 'Apalancamiento manejable'],
-  ['ROIC', '13.8%', 'Superior al WACC mock'],
-]
-const sensitivity = [
-  ['g / WACC', '8.0%', '8.5%', '9.0%'],
-  ['2.0%', '198', '177', '160'],
-  ['2.5%', '218', '193', '172'],
-  ['3.0%', '247', '214', '187'],
+  { base: '#39445c', deep: '#111722', glow: '#8ca0c6' },
 ]
 
 const TRAIN = {
@@ -79,34 +65,595 @@ const TRANSITION_MS = {
   zoomIn: 1650,
 }
 
-function BarChart() {
-  const bars = [76, 82, 88, 93, 100]
+const INTERRUPT_TRANSITION_MS = {
+  zoomOut: 240,
+  move: 520,
+  zoomIn: 620,
+}
+
+const companyFacts = [
+  { value: '32.889', label: 'Route miles de red', tone: 'blue' },
+  { value: '23', label: 'Estados cubiertos', tone: 'teal' },
+  { value: '7.300', label: 'Comunidades', tone: 'amber' },
+  { value: '26%', label: 'Stake en Ferromex', tone: 'purple' },
+]
+
+const businessSegments = [
+  { pct: '33%', name: 'Bulk', detail: 'Agro · Carbón · Fertilizantes', revenue: 'USD 7.586M', tone: 'blue' },
+  { pct: '37%', name: 'Industrial', detail: 'Químicos · Metales · Madera', revenue: 'USD 8.604M', tone: 'teal' },
+  { pct: '30%', name: 'Premium', detail: 'Intermodal · Automotive', revenue: 'USD 7.030M', tone: 'amber' },
+]
+
+const industryFacts = [
+  { value: '28%', label: 'de la carga total de EE.UU. va por tren' },
+  { value: '7', label: 'empresas Class I controlan todo el mercado' },
+  { value: 'Duopolio', label: 'UNP + BNSF dominan el Oeste (100%)' },
+  { value: '3-4x', label: 'más eficiente en combustible que el camión' },
+]
+
+const fodaCards = [
+  {
+    title: 'Fortalezas',
+    tone: 'blue',
+    points: ['Moat: red irreplicable', 'FCF USD 5.499M', 'Dividend Aristocrat +20 años'],
+  },
+  {
+    title: 'Oportunidades',
+    tone: 'teal',
+    points: ['Reshoring industrial', 'Intermodal e-commerce', 'Fusión NSC (+USD 3.000M sinergias)'],
+  },
+  {
+    title: 'Debilidades',
+    tone: 'amber',
+    points: ['CAPEX 14,5% ingresos', 'D/E 1,72x (alto vs pares)', 'Dependencia carbón en caída'],
+  },
+  {
+    title: 'Amenazas',
+    tone: 'red',
+    points: ['Riesgo arancelario México 11%', 'Ciclo económico', 'STB regulatorio'],
+  },
+]
+
+const operatingRatio = [
+  { year: 'FY2021', value: '57,1%', height: 82, tone: 'blue' },
+  { year: 'FY2023', value: '60,9%', height: 95, tone: 'blue' },
+  { year: 'FY2025', value: '59,8%', height: 90, tone: 'amber' },
+]
+
+const ratiosData = [
+  { value: '40,2%', label: 'Margen Operativo (CSX: 32,1%)', tone: 'blue' },
+  { value: '29,1%', label: 'Margen Neto', tone: 'teal' },
+  { value: '40,4%', label: 'ROE', tone: 'amber' },
+  { value: '20,0%', label: 'Retorno sobre Capital Total', tone: 'purple' },
+  { value: '7,52x', label: 'Interest Coverage (CSX: 5,36x)', tone: 'teal' },
+  { value: '1,72x', label: 'Deuda / Equity (D/E)', tone: 'red' },
+  { value: '0,91x', label: 'Current Ratio (Normal sector)', tone: 'slate' },
+  { value: '4,1%', label: 'FCF Yield', tone: 'blue' },
+]
+
+const financialYears = [
+  { year: '2021', revenue: 21804, income: 6523 },
+  { year: '2022', revenue: 24875, income: 6998 },
+  { year: '2023', revenue: 24119, income: 6379 },
+  { year: '2024', revenue: 24250, income: 6747 },
+  { year: '2025', revenue: 24510, income: 7138 },
+]
+
+const dividends = [
+  { year: '2021', dpa: '4,29', payout: '43,1%' },
+  { year: '2022', dpa: '5,08', payout: '45,3%' },
+  { year: '2023', dpa: '5,20', payout: '49,8%' },
+  { year: '2024', dpa: '5,28', payout: '47,6%' },
+  { year: '2025', dpa: '5,44', payout: '45,4%', highlight: true },
+]
+
+const shareholders = [
+  { name: 'Vanguard', value: '9,89%', tone: 'blue' },
+  { name: 'BlackRock', value: '8,19%', tone: 'royal' },
+  { name: 'State Street', value: '4,26%', tone: 'sky' },
+  { name: 'Capital World', value: '3,39%', tone: 'amber' },
+  { name: 'Otros inst.', value: '57,8%', tone: 'slate' },
+  { name: 'Retail', value: '15,2%', tone: 'light' },
+  { name: 'Insiders', value: '1,35%', tone: 'teal' },
+]
+
+const porterForces = [
+  { force: 'Rivalidad entre pares', level: 'Moderada', tone: 'amber' },
+  { force: 'Amenaza nuevos entrantes', level: 'Muy baja', tone: 'teal' },
+  { force: 'Poder proveedores', level: 'Moderado', tone: 'amber' },
+  { force: 'Poder clientes (Bulk/Ind.)', level: 'Moderado', tone: 'amber' },
+  { force: 'Amenaza sustitutos (Premium)', level: 'Alta', tone: 'red' },
+]
+
+const waccItems = [
+  ['rf', '4,46%'],
+  ['β', '0,986'],
+  ['ERP', '2,82%'],
+  ['Ke', '7,24%'],
+  ['Kd', '5,85%'],
+  ['We', '83,1%'],
+  ['t', '22,1%'],
+]
+
+const scenarios = [
+  { name: 'Base', prob: '50%', growth: '3,5% - 4,5%', value: 'USD 229,52', tone: 'blue' },
+  { name: 'Positivo', prob: '30%', growth: '5% - 6,5%', value: 'USD 261,47', tone: 'teal' },
+  { name: 'Negativo', prob: '20%', growth: '1% - 2%', value: 'USD 196,01', tone: 'red' },
+  { name: 'Pond.', prob: '', growth: '', value: 'USD 232,41', tone: 'dark' },
+]
+
+const multiples = [
+  ['PER', 'USD 260,02'],
+  ['P/BV', 'USD 172,73'],
+  ['P/Sales', 'USD 215,29'],
+  ['EV/Sales', 'USD 217,29'],
+  ['PROM.', 'USD 216,33'],
+]
+
+const conclusionSummary = [
+  { value: '6,78%', label: 'WACC' },
+  { value: 'USD 232', label: 'Precio DCF' },
+  { value: 'USD 216', label: 'Precio Mult.' },
+  { value: 'USD 210', label: 'Precio Final' },
+  { value: '~USD 264', label: 'Mercado' },
+  { value: 'MANTENER', label: 'Recom.' },
+]
+
+const projectionSeries = [
+  { year: '2021', revenue: 21804, ebit: 9300 },
+  { year: '2022', revenue: 24875, ebit: 9900 },
+  { year: '2023', revenue: 24119, ebit: 9200 },
+  { year: '2024', revenue: 24250, ebit: 9800 },
+  { year: '2025', revenue: 24510, ebit: 9900 },
+  { year: '2026E', revenue: 25350, ebit: 10220 },
+  { year: '2027E', revenue: 26360, ebit: 10660 },
+  { year: '2028E', revenue: 27530, ebit: 11205 },
+  { year: '2029E', revenue: 28560, ebit: 11620 },
+  { year: '2030E', revenue: 29480, ebit: 12000 },
+]
+
+const fcffBase = [
+  ['2026E', '6.538'],
+  ['2027E', '6.899'],
+  ['2028E', '7.314'],
+  ['2029E', '7.677'],
+  ['2030E', '8.019'],
+]
+
+const valuationBars = [
+  { name: 'DDM', weight: 'Pond. 10%', value: 'USD 75,98', width: 12, tone: 'slate' },
+  { name: 'DCF pond.', weight: 'Pond. 50%', value: 'USD 232,41', width: 100, tone: 'blue' },
+  { name: 'Múltiplos', weight: 'Pond. 40%', value: 'USD 216,33', width: 93, tone: 'purple' },
+]
+
+const stagger = (index: number): React.CSSProperties => ({ '--i': index } as React.CSSProperties)
+
+const formatNumber = (value: number) => value.toLocaleString('en-US')
+
+function CompanyOverview() {
   return (
-    <div className="bar-chart">
-      {bars.map((height, i) => (
-        <div key={i} style={{ height: `${height}%` }}>
-          <span>{2021 + i}</span>
+    <div className="company-layout">
+      <div className="fact-grid">
+        {companyFacts.map((fact, i) => (
+          <div className={`fact-card tone-${fact.tone}`} style={stagger(i)} key={fact.label}>
+            <strong>{fact.value}</strong>
+            <span>{fact.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <section className="panel-card segments-panel" style={stagger(4)}>
+        <h3>3 segmentos de negocio</h3>
+        <div className="segment-stack">
+          {businessSegments.map((segment, i) => (
+            <div className="business-segment" style={stagger(i)} key={segment.name}>
+              <div className={`segment-percent tone-${segment.tone}`}>{segment.pct}</div>
+              <div>
+                <strong>{segment.name}</strong>
+                <span>{segment.detail}</span>
+              </div>
+              <b className={`tone-text-${segment.tone}`}>{segment.revenue}</b>
+            </div>
+          ))}
         </div>
-      ))}
+      </section>
     </div>
   )
 }
 
-function DcfWaterfall() {
-  const items = [
-    ['FCF FY26e', '+6.7'],
-    ['Crecimiento', '+1.1'],
-    ['Terminal value', '+82.4'],
-    ['Deuda neta', '-18.0'],
-    ['Equity value', '64.8'],
-  ]
+function IndustryStrategy() {
+  return (
+    <div className="strategy-layout">
+      <div className="strategy-left">
+        <section className="panel-card industry-panel" style={stagger(0)}>
+          <h3>Industria Class I</h3>
+          <div className="industry-facts">
+            {industryFacts.map((fact, i) => (
+              <div className="industry-fact" style={stagger(i)} key={fact.value}>
+                <strong>{fact.value}</strong>
+                <span>{fact.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <div className="foda-grid">
+          {fodaCards.map((card, i) => (
+            <section className={`foda-card tone-${card.tone}`} style={stagger(i + 2)} key={card.title}>
+              <h4>{card.title}</h4>
+              <ul>
+                {card.points.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </div>
+
+      <section className="panel-card psr-panel" style={stagger(1)}>
+        <h3>Estrategia: PSR</h3>
+        <p>Operating Ratio (menor = mejor)</p>
+        <div className="or-chart">
+          {operatingRatio.map((bar, i) => (
+            <div className="or-column" style={stagger(i)} key={bar.year}>
+              <strong>{bar.value}</strong>
+              <div className={`or-bar tone-${bar.tone}`} style={{ height: `${bar.height}%` }} />
+              <span>{bar.year}</span>
+            </div>
+          ))}
+        </div>
+        <div className="strategy-notes">
+          <p>
+            <strong>USD 245M:</strong>
+            <span>ahorro por cada -1pp de OR</span>
+          </p>
+          <p>
+            <strong>Fusión NSC:</strong>
+            <span>50K miles · 43 estados</span>
+          </p>
+          <p>
+            <strong>26% Ferromex:</strong>
+            <span>puente USMCA México-EE.UU.</span>
+          </p>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function RatioDashboard() {
+  return (
+    <div className="ratios-layout">
+      <div className="ratios-grid">
+        {ratiosData.map((ratio, i) => (
+          <div className={`ratio-tile tone-${ratio.tone}`} style={stagger(i)} key={ratio.label}>
+            <strong>{ratio.value}</strong>
+            <span>{ratio.label}</span>
+          </div>
+        ))}
+      </div>
+      <div className="dupont-strip" style={stagger(8)}>
+        <strong>DUPONT:</strong> ROE 40,4% = Margen Neto 29,1% × Rotación Activos 0,36x × Leverage 3,89x
+      </div>
+    </div>
+  )
+}
+
+function MarketPriceDashboard() {
+  return (
+    <div className="market-price-layout">
+      <figure className="market-chart-panel" style={stagger(0)}>
+        <img src="/unp-price-chart.png" alt="Evolución histórica de precio de Union Pacific Corporation" />
+      </figure>
+    </div>
+  )
+}
+
+function FinancialEvolution() {
+  const maxValue = 30000
 
   return (
-    <div className="waterfall">
-      {items.map(([label, value], i) => (
-        <div className="wf-card" key={label}>
-          <small>{label}</small>
-          <strong className={i === 3 ? 'negative' : ''}>{value}</strong>
+    <div className="financial-layout">
+      <section className="panel-card finance-chart-panel" style={stagger(0)}>
+        <div className="finance-chart">
+          {financialYears.map((item, i) => (
+            <div className="finance-year" style={stagger(i)} key={item.year}>
+              <div className="finance-pair">
+                <div className="finance-bar revenue" style={{ height: `${(item.revenue / maxValue) * 100}%` }}>
+                  <span>{formatNumber(item.revenue)}</span>
+                </div>
+                <div className="finance-bar income" style={{ height: `${(item.income / maxValue) * 100}%` }}>
+                  <span>{formatNumber(item.income)}</span>
+                </div>
+              </div>
+              <strong>{item.year}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="chart-legend">
+          <span>
+            <i className="revenue" /> Ingresos (USD M)
+          </span>
+          <span>
+            <i className="income" /> Net Income (USD M)
+          </span>
+        </div>
+        <div className="classification-strip">
+          CLASIFICACION: VALUE con componentes de crecimiento moderado · P/E ~19x · Beta 0,99 · FCF Yield 4,1%
+        </div>
+      </section>
+
+      <section className="panel-card dividend-panel" style={stagger(1)}>
+        <h3>Dividendos (DPA USD)</h3>
+        <div className="dividend-table">
+          <div className="dividend-row head">
+            <span>Año</span>
+            <span>DPA</span>
+            <span>Payout</span>
+          </div>
+          {dividends.map((item, i) => (
+            <div className={`dividend-row ${item.highlight ? 'highlight' : ''}`} style={stagger(i)} key={item.year}>
+              <span>{item.year}</span>
+              <strong>{item.dpa}</strong>
+              <span>{item.payout}</span>
+            </div>
+          ))}
+        </div>
+        <div className="dividend-footer">+20 años consecutivos de aumentos · Dividend Aristocrat</div>
+      </section>
+    </div>
+  )
+}
+
+function ManagementStrategy() {
+  return (
+    <div className="management-layout">
+      <div className="management-left">
+        <section className="panel-card ceo-panel" style={stagger(0)}>
+          <h3>Jim Vena — CEO</h3>
+          <p>40+ años en ferrocarriles · Ex COO Canadian National</p>
+          <p>PSR como eje central de gestión</p>
+          <p>Comprometido 5+ años adicionales (fusión NSC)</p>
+        </section>
+
+        <section className="panel-card holders-panel" style={stagger(1)}>
+          <h3>Estructura accionaria</h3>
+          <div className="holder-list">
+            {shareholders.map((holder, i) => (
+              <div className="holder-row" style={stagger(i)} key={holder.name}>
+                <i className={`tone-${holder.tone}`} />
+                <span>{holder.name}</span>
+                <strong>{holder.value}</strong>
+              </div>
+            ))}
+          </div>
+          <p>83,5% institucional · Sin accionista de control</p>
+        </section>
+      </div>
+
+      <section className="panel-card porter-panel" style={stagger(2)}>
+        <h3>Las 5 fuerzas de Porter</h3>
+        <div className="porter-stack">
+          {porterForces.map((item, i) => (
+            <div className="porter-row" style={stagger(i)} key={item.force}>
+              <span>{item.force}</span>
+              <strong className={`tone-${item.tone}`}>{item.level}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="pestel-strip">
+          <b>PESTEL highlights</b>
+          <span>STB regulatorio</span>
+          <span>USMCA / México</span>
+          <span>Combustible</span>
+          <span>Laboral</span>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function ValuationDashboard() {
+  return (
+    <div className="valuation-layout">
+      <section className="wacc-panel" style={stagger(0)}>
+        <div>
+          <strong>WACC = 6,78%</strong>
+          <p>rm = 7,28% (SPY 25 años) · Kd = YTM ponderado bonos UNP en circulación</p>
+        </div>
+        <div className="wacc-items">
+          {waccItems.map(([label, value], i) => (
+            <span style={stagger(i)} key={label}>
+              {label}: <b>{value}</b>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <div className="valuation-main">
+        <section className="dcf-panel" style={stagger(1)}>
+          <h3>DCF — FCFF (WACC 6,78% · g 2,5%)</h3>
+          <div className="scenario-grid">
+            {scenarios.map((scenario, i) => (
+              <div className={`scenario-card tone-${scenario.tone}`} style={stagger(i)} key={scenario.name}>
+                <h4>{scenario.name}</h4>
+                {scenario.prob && <p>Prob: {scenario.prob}</p>}
+                {scenario.growth && <p>Crec.: {scenario.growth}</p>}
+                <strong>{scenario.value}</strong>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="multiples-panel" style={stagger(2)}>
+          <h3>Múltiples</h3>
+          {multiples.map(([label, value], i) => (
+            <p className={label === 'PROM.' ? 'prom' : ''} style={stagger(i)} key={label}>
+              <span>{label}:</span>
+              <strong>{value}</strong>
+            </p>
+          ))}
+        </section>
+      </div>
+
+      <div className="final-price-strip" style={stagger(3)}>
+        <span>DDM: USD 7,60</span>
+        <span>DCF pond.: USD 116,21</span>
+        <span>Múltiplos: USD 86,53</span>
+        <strong>PRECIO FINAL: USD 210,34</strong>
+      </div>
+    </div>
+  )
+}
+
+function ProjectionDashboard() {
+  const width = 900
+  const height = 360
+  const padding = { top: 24, right: 24, bottom: 56, left: 70 }
+  const chartWidth = width - padding.left - padding.right
+  const chartHeight = height - padding.top - padding.bottom
+  const maxValue = 35000
+  const yTicks = [35000, 30000, 25000, 20000, 15000, 10000, 5000, 0]
+
+  const pointFor = (item: (typeof projectionSeries)[number], key: 'revenue' | 'ebit', index: number) => {
+    const x = padding.left + (chartWidth / (projectionSeries.length - 1)) * index
+    const y = padding.top + (1 - item[key] / maxValue) * chartHeight
+
+    return { x, y }
+  }
+  const pointsFor = (key: 'revenue' | 'ebit') =>
+    projectionSeries.map((item, i) => {
+      const point = pointFor(item, key, i)
+      return `${point.x},${point.y}`
+    }).join(' ')
+
+  return (
+    <div className="projection-layout">
+      <section className="panel-card projection-chart-panel" style={stagger(0)}>
+        <svg className="projection-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Revenue y EBIT 2021 a 2030E">
+          {yTicks.map((tick) => {
+            const y = padding.top + (1 - tick / maxValue) * chartHeight
+            return (
+              <g className="projection-grid-line" key={tick}>
+                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} />
+                <text x={padding.left - 12} y={y + 5}>
+                  {formatNumber(tick)}
+                </text>
+              </g>
+            )
+          })}
+          <line className="projection-axis" x1={padding.left} x2={padding.left} y1={padding.top} y2={height - padding.bottom} />
+          <line className="projection-axis" x1={padding.left} x2={width - padding.right} y1={height - padding.bottom} y2={height - padding.bottom} />
+          <polyline className="projection-line revenue" points={pointsFor('revenue')} />
+          <polyline className="projection-line ebit" points={pointsFor('ebit')} />
+          {projectionSeries.map((item, i) => {
+            const revenue = pointFor(item, 'revenue', i)
+            const ebit = pointFor(item, 'ebit', i)
+            return (
+              <g className="projection-point-pair" style={stagger(i)} key={item.year}>
+                <circle className="revenue" cx={revenue.x} cy={revenue.y} r="6" />
+                <circle className="ebit" cx={ebit.x} cy={ebit.y} r="6" />
+                <text x={revenue.x} y={height - 18}>
+                  {item.year}
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+        <div className="chart-legend projection-legend">
+          <span>
+            <i className="revenue" /> Revenue (USD M)
+          </span>
+          <span>
+            <i className="income" /> EBIT (USD M)
+          </span>
+        </div>
+      </section>
+
+      <section className="panel-card fcff-panel" style={stagger(1)}>
+        <h3>FCFF base (USD M)</h3>
+        <div className="fcff-table">
+          <div className="fcff-row head">
+            <span>Año</span>
+            <span>FCFF</span>
+          </div>
+          {fcffBase.map(([year, value], i) => (
+            <div className="fcff-row" style={stagger(i)} key={year}>
+              <span>{year}</span>
+              <strong>{value}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="projection-assumptions">
+          OR: 59,7% → 59,3% · CAPEX: 14,5%-15,2%
+          <br />
+          Margen EBIT: 40,3% → 40,7% · g term: 2,5%
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function RecommendationDashboard() {
+  return (
+    <div className="recommendation-layout">
+      <section className="panel-card valuation-summary-panel" style={stagger(0)}>
+        <h3>Resumen de valuación</h3>
+        <div className="valuation-bars">
+          {valuationBars.map((bar, i) => (
+            <div className="valuation-bar-row" style={stagger(i)} key={bar.name}>
+              <div>
+                <strong>{bar.name}</strong>
+                <span>{bar.weight}</span>
+              </div>
+              <div className="valuation-bar-track">
+                <i className={`tone-${bar.tone}`} style={{ width: `${bar.width}%` }} />
+                <b>{bar.value}</b>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="weighted-final">
+          <span>Precio ponderado final:</span>
+          <strong>USD 210,34</strong>
+        </div>
+      </section>
+
+      <section className="panel-card recommendation-panel" style={stagger(1)}>
+        <div className="market-compare">
+          <p>
+            <span>Precio mercado:</span>
+            <strong>~USD 264</strong>
+          </p>
+          <p>
+            <span>Precio objetivo:</span>
+            <strong className="target">USD 210</strong>
+          </p>
+        </div>
+        <div className="downside-box">DOWNSIDE: -20,3%</div>
+        <div className="hold-box">
+          <strong>MANTENER</strong>
+          <span>/ NEUTRAL</span>
+        </div>
+        <div className="buy-conditions">
+          <strong>Para comprar necesitamos:</strong>
+          <span>Aprobación fusión NSC (STB)</span>
+          <span>Precio baja a zona USD 220-230</span>
+          <span>Reshoring &gt; proyectado</span>
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function FinalSummaryDashboard() {
+  return (
+    <div className="final-summary-layout">
+      {conclusionSummary.map((metric, i) => (
+        <div className={`summary-metric ${metric.value === 'MANTENER' ? 'recommend' : ''}`} style={stagger(i)} key={metric.label}>
+          <strong>{metric.value}</strong>
+          <span>{metric.label}</span>
         </div>
       ))}
     </div>
@@ -258,7 +805,7 @@ function TrainWorld({ selectedIndex, viewIndex, phase, slides, trainOffsetX, onS
             {slides.map((slide, i) => {
               return (
                 <button
-                  className={`wagon wagon-${i % 5} ${i === selectedIndex ? 'active' : ''}`}
+                  className={`wagon wagon-${i % wagonPalettes.length} ${i === selectedIndex ? 'active' : ''}`}
                   key={slide.title}
                   onClick={() => onSelect(i)}
                   type="button"
@@ -321,7 +868,7 @@ function SlideFullscreen({ index, phase, slide, total }: { index: number; phase:
           </span>
         </div>
         <div className="slide-main">
-          <div>
+          <div className="slide-title-block">
             <h2>{slide.title}</h2>
             {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
           </div>
@@ -338,188 +885,88 @@ function App() {
   const [viewIndex, setViewIndex] = useState(-1)
   const [trainOffsetX, setTrainOffsetX] = useState(0)
   const transitionTimers = useRef<number[]>([])
+  const navigationTarget = useRef(-1)
   const slides: Slide[] = useMemo(
     () => [
       {
-        eyebrow: '01 · Negocio',
-        title: 'Red ferroviaria crítica para la economía real',
+        eyebrow: '01 · La empresa',
+        title: 'Union Pacific: La Empresa',
+        subtitle: '160 años de historia · Infraestructura logística crítica de EE.UU.',
         icon: <Building2 />,
-        cargo: 'Negocio',
-        body: (
-          <div className="two-col">
-            <div>
-              <p>
-                Union Pacific opera una red ferroviaria de carga con exposición a intermodal, agricultura, energía,
-                químicos e industriales. La tesis base: activos difíciles de replicar, escala, pricing power moderado
-                y eficiencia operativa.
-              </p>
-              <ul>
-                <li>Ingresos diversificados por carga y geografía.</li>
-                <li>Costos intensivos en capital: vías, locomotoras, mantenimiento.</li>
-                <li>Ventaja competitiva por red y permisos/regulación.</li>
-              </ul>
-            </div>
-            <div className="segment-card">
-              <h3>Mix de ingresos mock</h3>
-              {['Intermodal 29%', 'Industrial 22%', 'Agriculture 18%', 'Energy 16%', 'Premium/Auto 15%'].map((x, i) => (
-                <div className="segment" key={x}>
-                  <span>{x}</span>
-                  <b style={{ width: `${70 - i * 8}%` }} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
+        cargo: 'Empresa',
+        body: <CompanyOverview />,
       },
       {
-        eyebrow: '02 · Drivers',
-        title: 'La valuación depende de volumen, pricing y eficiencia',
-        icon: <TrendingUp />,
-        cargo: 'Drivers',
-        body: (
-          <div className="cards">
-            <div>
-              <h3>Pricing</h3>
-              <p>Capacidad de trasladar inflación/costos vía contratos y tarifas.</p>
-            </div>
-            <div>
-              <h3>Volumen</h3>
-              <p>Intermodal y commodities condicionados por ciclo económico.</p>
-            </div>
-            <div>
-              <h3>Operating ratio</h3>
-              <p>Productividad, combustible y utilización de red como palancas.</p>
-            </div>
-            <div>
-              <h3>Capex</h3>
-              <p>El FCF mejora si capex se mantiene disciplinado sin romper servicio.</p>
-            </div>
-          </div>
-        ),
-      },
-      {
-        eyebrow: '03 · Finanzas mock',
-        title: 'Crecimiento estable, márgenes altos, FCF robusto',
-        icon: <BarChart3 />,
-        cargo: 'Finanzas',
-        body: (
-          <div className="dashboard">
-            <BarChart />
-            <div className="metric-grid">
-              {['Ingresos', 'EBITDA', 'Margen EBITDA', 'FCF'].map((metric, i) => (
-                <div className="metric" key={metric}>
-                  <small>{metric}</small>
-                  <strong>{money[i]}</strong>
-                  <span>FY25e mock</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ),
-      },
-      {
-        eyebrow: '04 · Ratios',
-        title: 'Múltiplos con prima razonable por calidad del activo',
+        eyebrow: '02 · Industria',
+        title: 'Industria · FODA · Estrategia',
+        subtitle: 'Class I Railroad en duopolio occidental · PSR como ventaja competitiva clave',
         icon: <Gauge />,
-        cargo: 'Ratios',
-        body: (
-          <div className="ratio-grid">
-            {ratios.map(([label, value, note]) => (
-              <div className="ratio" key={label}>
-                <small>{label}</small>
-                <strong>{value}</strong>
-                <span>{note}</span>
-              </div>
-            ))}
-          </div>
-        ),
+        cargo: 'Industria',
+        body: <IndustryStrategy />,
       },
       {
-        eyebrow: '05 · DCF',
-        title: 'DCF mock: rango de valor, no número mágico',
-        icon: <Landmark />,
-        cargo: 'DCF',
-        body: (
-          <div className="two-col">
-            <div>
-              <p>
-                Supuestos ilustrativos: WACC 8.5%, crecimiento perpetuo 2.5%, FCF creciendo 3-5% anual, capex estable
-                y recompras moderadas.
-              </p>
-              <div className="assumption-list">
-                <span>EV mock: US$ 118B</span>
-                <span>Deuda neta: US$ 18B</span>
-                <span>Equity value: US$ 100B</span>
-                <span>Precio implícito: US$ 193</span>
-              </div>
-            </div>
-            <DcfWaterfall />
-          </div>
-        ),
-      },
-      {
-        eyebrow: '06 · Sensibilidad',
-        title: 'WACC y crecimiento cambian fuerte el precio implícito',
+        eyebrow: '03 · Ratios',
+        title: 'Análisis Financiero: Ratios',
+        subtitle: 'Rentabilidad · Solvencia · Liquidez · DuPont',
         icon: <BarChart3 />,
-        cargo: 'Sensibilidad',
-        body: (
-          <table className="sens">
-            <tbody>
-              {sensitivity.map((row, i) => (
-                <tr key={i}>
-                  {row.map((cell, j) => (
-                    <td key={cell} className={i === 0 || j === 0 ? 'head' : ''}>
-                      {cell}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ),
+        cargo: 'Ratios',
+        body: <RatioDashboard />,
       },
       {
-        eyebrow: '07 · Riesgos',
-        title: 'Un moat real no elimina riesgo operativo',
-        icon: <ShieldAlert />,
-        cargo: 'Riesgos',
-        body: (
-          <div className="cards risk">
-            <div>
-              <h3>Ciclo</h3>
-              <p>Menor actividad reduce volumen transportado.</p>
-            </div>
-            <div>
-              <h3>Combustible</h3>
-              <p>Volatilidad puede presionar margen si no se traslada.</p>
-            </div>
-            <div>
-              <h3>Regulación</h3>
-              <p>Tarifas, seguridad y condiciones laborales.</p>
-            </div>
-            <div>
-              <h3>Capex</h3>
-              <p>Subinversión mejora FCF hoy y destruye servicio mañana.</p>
-            </div>
-          </div>
-        ),
+        eyebrow: '04 · Mercado',
+        title: 'Evolución del Precio de Mercado',
+        subtitle: 'UNP · Cotización histórica · Valor de mercado incorporado en la tesis',
+        icon: <TrendingUp />,
+        cargo: 'Mercado',
+        body: <MarketPriceDashboard />,
       },
       {
-        eyebrow: '08 · Conclusión',
-        title: 'Rango mock: calidad alta, upside acotado si el mercado ya paga el moat',
+        eyebrow: '05 · Finanzas',
+        title: 'Evolución Financiera & Dividendos',
+        subtitle: 'FY2021-FY2025 · Value vs Growth · Dividend Aristocrat',
+        icon: <TrendingUp />,
+        cargo: 'Finanzas',
+        body: <FinancialEvolution />,
+      },
+      {
+        eyebrow: '06 · Management',
+        title: 'Management, Accionistas & Análisis Estratégico',
+        subtitle: 'Porter · PESTEL · Gobierno corporativo',
+        icon: <Building2 />,
+        cargo: 'Management',
+        body: <ManagementStrategy />,
+      },
+      {
+        eyebrow: '07 · Valuación',
+        title: 'WACC · Proyecciones · Valuación',
+        subtitle: 'DDM · DCF (3 escenarios) · Múltiples',
+        icon: <Landmark />,
+        cargo: 'WACC',
+        body: <ValuationDashboard />,
+      },
+      {
+        eyebrow: '08 · Proyecciones',
+        title: 'Proyecciones 2026-2030: Escenario Base',
+        subtitle: 'FCFF = NOPAT + D&A - CAPEX - DeltaWC · WACC 6,78% · g 2,5%',
+        icon: <BarChart3 />,
+        cargo: 'Proyección',
+        body: <ProjectionDashboard />,
+      },
+      {
+        eyebrow: '09 · Recomendación',
+        title: 'Conclusión & Recomendación Final',
+        subtitle: 'Precio objetivo ponderado · Upside / Downside · Recomendación',
         icon: <TrendingUp />,
         cargo: 'Conclusión',
-        body: (
-          <div className="conclusion">
-            <p>
-              Conclusión preliminar: Union Pacific sería una empresa de calidad, con activos estratégicos y generación
-              consistente de caja. En el escenario mock, el valor razonable queda cerca de{' '}
-              <strong>US$ 185-215 por acción</strong>. La recomendación académica sería{' '}
-              <strong>mantener / compra selectiva</strong> según margen de seguridad.
-            </p>
-            <span>Próximo paso: reemplazar todos los mocks por 10-K, investor presentation y comparables reales.</span>
-          </div>
-        ),
+        body: <RecommendationDashboard />,
+      },
+      {
+        eyebrow: '10 · Resumen',
+        title: 'Union Pacific Corporation',
+        subtitle: 'NYSE: UNP · Análisis & Valuación',
+        icon: <Landmark />,
+        cargo: 'Resumen',
+        body: <FinalSummaryDashboard />,
       },
     ],
     [],
@@ -531,8 +978,12 @@ function App() {
       if (next === index && phase === 'fullscreen') return
       if (next === index && phase === 'overview') return
 
+      navigationTarget.current = next
+
       transitionTimers.current.forEach((timer) => window.clearTimeout(timer))
       transitionTimers.current = []
+      const isInterrupting = phase === 'starting' || phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
+      const transitionMs = isInterrupting ? INTERRUPT_TRANSITION_MS : TRANSITION_MS
 
       const queue = (callback: () => void, delay: number) => {
         const timer = window.setTimeout(callback, delay)
@@ -560,11 +1011,26 @@ function App() {
         queue(() => {
           setPhase('moving')
           setViewIndex(-1)
-        }, TRANSITION_MS.zoomOut)
+        }, transitionMs.zoomOut)
         queue(() => {
           setIndex(-1)
           setPhase('overview')
-        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
+        }, transitionMs.zoomOut + transitionMs.move)
+        return
+      }
+
+      if (phase === 'moving') {
+        setTrainOffsetX(0)
+        setPhase('moving')
+        setViewIndex(next)
+        queue(() => {
+          setIndex(next)
+          setPhase('zooming-in')
+          setViewIndex(next)
+        }, transitionMs.move)
+        queue(() => {
+          setPhase('fullscreen')
+        }, transitionMs.move + transitionMs.zoomIn)
         return
       }
 
@@ -575,15 +1041,15 @@ function App() {
         queue(() => {
           setPhase('moving')
           setViewIndex(next)
-        }, TRANSITION_MS.zoomOut)
+        }, transitionMs.zoomOut)
         queue(() => {
           setIndex(next)
           setPhase('zooming-in')
           setViewIndex(next)
-        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move)
+        }, transitionMs.zoomOut + transitionMs.move)
         queue(() => {
           setPhase('fullscreen')
-        }, TRANSITION_MS.zoomOut + TRANSITION_MS.move + TRANSITION_MS.zoomIn)
+        }, transitionMs.zoomOut + transitionMs.move + transitionMs.zoomIn)
         return
       }
 
@@ -596,10 +1062,10 @@ function App() {
         setIndex(next)
         setPhase('zooming-in')
         setViewIndex(next)
-      }, TRANSITION_MS.move)
+      }, transitionMs.move)
       queue(() => {
         setPhase('fullscreen')
-      }, TRANSITION_MS.move + TRANSITION_MS.zoomIn)
+      }, transitionMs.move + transitionMs.zoomIn)
     },
     [index, phase, slides.length],
   )
@@ -616,13 +1082,14 @@ function App() {
       const isTyping = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable
       if (isTyping) return
 
+      const navigationBase = navigationTarget.current
       if (event.key === 'ArrowRight' || event.key === ' ') {
         event.preventDefault()
-        navigateTo(index + 1)
+        navigateTo(navigationBase + 1)
       }
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
-        navigateTo(index - 1)
+        navigateTo(navigationBase - 1)
       }
       if (event.key === 'Home' || event.key === 'Enter') {
         event.preventDefault()
@@ -633,8 +1100,8 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [index, navigateTo])
 
-  const goNext = () => navigateTo(index + 1)
-  const goPrev = () => navigateTo(index - 1)
+  const goNext = () => navigateTo(navigationTarget.current + 1)
+  const goPrev = () => navigateTo(navigationTarget.current - 1)
   const progress = index === -1 ? 0 : ((index + 1) / slides.length) * 100
   const activeSlide = index >= 0 ? slides[index] : undefined
   const isTransitioning = phase === 'starting' || phase === 'zooming-out' || phase === 'moving' || phase === 'zooming-in'
@@ -652,8 +1119,8 @@ function App() {
           <div className="landing-title-row">
             <img className="landing-company-logo" src="/union-pacific-logo.svg" alt="Union Pacific logo" />
             <div>
-              <p>Trabajo Práctico de Valuación · mock-up académico</p>
-              <h1>Valuación de Empresa: Union Pacific</h1>
+              <p>NYSE: UNP · Análisis & Valuación</p>
+              <h1>Union Pacific Corporation</h1>
             </div>
           </div>
         </div>
@@ -683,22 +1150,22 @@ function App() {
 
       <footer className={`controls ${index === -1 ? 'start-controls' : ''}`}>
         {index === -1 ? (
-          <button className="start-button" onClick={() => navigateTo(0)} disabled={isTransitioning}>
+          <button className="start-button" onClick={() => navigateTo(0)}>
             <TrainFront />
             Comenzar
             <ArrowRight />
           </button>
         ) : (
           <>
-            <button onClick={goPrev} disabled={isTransitioning}>
+            <button onClick={goPrev}>
               <ArrowLeft />
               Anterior
             </button>
-            <button className="restart-button" onClick={() => navigateTo(-1)} disabled={isTransitioning}>
+            <button className="restart-button" onClick={() => navigateTo(-1)}>
               Inicio
             </button>
             <span>{`${String(index + 1).padStart(2, '0')} / ${slides.length}`}</span>
-            <button onClick={goNext} disabled={index === slides.length - 1 || isTransitioning}>
+            <button onClick={goNext} disabled={index === slides.length - 1 && phase === 'fullscreen'}>
               Siguiente
               <ArrowRight />
             </button>
