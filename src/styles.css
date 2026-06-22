@@ -295,8 +295,6 @@ h1 {
   font-weight: 760;
   text-align: center;
   box-shadow: 0 22px 48px #0009, inset 0 1px #ffffff18;
-  animation: content-rise .7s cubic-bezier(.22, 1, .36, 1) both;
-  animation-delay: calc(.22s + var(--i, 0) * 85ms);
 }
 
 .summary-metric strong {
@@ -527,7 +525,7 @@ h1 {
 }
 
 .landing-mode.overview .train-consist {
-  animation: home-train-loop 30s linear infinite;
+  animation: home-train-loop 52s linear infinite;
 }
 
 .locomotive,
@@ -1327,15 +1325,22 @@ h1 {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  transform: scale(.985);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
   background:
     radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--wagon-glow) 18%, transparent), transparent 32%),
     linear-gradient(135deg, color-mix(in srgb, var(--wagon-base) 64%, #07101b) 0%, var(--wagon-deep) 54%, #07090f 100%);
 }
 
 .fullscreen-slide.visible {
-  opacity: 1;
   visibility: visible;
   pointer-events: auto;
+}
+
+.fullscreen-slide.fullscreen {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .fullscreen-slide.visible::before {
@@ -1376,6 +1381,7 @@ h1 {
 
 .fullscreen-slide.zooming-out {
   animation: slide-exit 1.05s cubic-bezier(.45, 0, .2, 1) both;
+  pointer-events: none;
 }
 
 .fullscreen-slide-inner {
@@ -2775,9 +2781,10 @@ h1 {
 .fullscreen-slide.zooming-in .porter-row,
 .fullscreen-slide.zooming-in .scenario-card,
 .fullscreen-slide.zooming-in .fcff-row,
-.fullscreen-slide.zooming-in .valuation-bar-row {
+.fullscreen-slide.zooming-in .valuation-bar-row,
+.fullscreen-slide.zooming-in .summary-metric {
   animation: content-rise .68s cubic-bezier(.22, 1, .36, 1) both;
-  animation-delay: calc(.15s + var(--i, 0) * 75ms);
+  animation-delay: .18s;
 }
 
 .fullscreen-slide.zooming-in .finance-bar,
@@ -2785,7 +2792,7 @@ h1 {
 .fullscreen-slide.zooming-in .valuation-bar-track i {
   transform-origin: center bottom;
   animation: bar-grow .85s cubic-bezier(.22, 1, .36, 1) both;
-  animation-delay: calc(.3s + var(--i, 0) * 80ms);
+  animation-delay: .3s;
 }
 
 .fullscreen-slide.zooming-in .projection-line {
@@ -2835,17 +2842,21 @@ h1 {
     opacity: 0;
     transform: translate3d(2600px, 0, 0);
   }
-  3% {
+  4% {
     opacity: 1;
     transform: translate3d(2600px, 0, 0);
   }
-  58% {
+  84% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-6400px, 0, 0);
+  }
+  90% {
+    opacity: 0;
+    transform: translate3d(-7000px, 0, 0);
   }
   100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+    opacity: 0;
+    transform: translate3d(-7000px, 0, 0);
   }
 }
 
@@ -2884,12 +2895,10 @@ h1 {
   0% {
     opacity: 0;
     transform: scale(.985);
-    filter: blur(5px);
   }
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0);
   }
 }
 
@@ -2897,12 +2906,10 @@ h1 {
   0% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0);
   }
   100% {
     opacity: 0;
     transform: scale(.975);
-    filter: blur(6px);
   }
 }
 
