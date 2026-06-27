@@ -7,6 +7,7 @@ import {
   Building2,
   Gauge,
   Landmark,
+  Leaf,
   TrainFront,
   TrendingUp,
 } from 'lucide-react'
@@ -24,12 +25,10 @@ type Slide = {
 type Phase = 'overview' | 'starting' | 'zooming-out' | 'moving' | 'zooming-in' | 'fullscreen'
 
 const landingBackgrounds = [
-  '/backgrounds/landing-rail.webp',
-  '/backgrounds/freight-yard.webp',
-  '/backgrounds/mountain-rail.webp',
-  '/backgrounds/desert-rail.webp',
-  '/backgrounds/horizon-rail.webp',
-  '/backgrounds/network-rail.webp',
+  '/backgrounds/desktop.webp',
+  '/backgrounds/desktop%20%281%29.webp',
+  '/backgrounds/desktop%20%282%29.webp',
+  '/backgrounds/desktop%20%283%29.webp',
 ]
 
 // Slide color contract:
@@ -72,10 +71,10 @@ const INTERRUPT_TRANSITION_MS = {
 }
 
 const companyFacts = [
-  { value: '32.889', label: 'Route miles de red', tone: 'blue' },
-  { value: '23', label: 'Estados cubiertos', tone: 'teal' },
-  { value: '7.300', label: 'Comunidades', tone: 'amber' },
-  { value: '26%', label: 'Stake en Ferromex', tone: 'purple' },
+  { value: '52.930', label: 'kilómetros', tone: 'blue' },
+  { value: '85,6%', label: 'del activo en infraestructura ferroviaria', tone: 'teal' },
+  { value: '1 tren', label: '= 300 camiones', tone: 'amber' },
+  { value: '23', label: 'estados cubiertos', tone: 'purple' },
 ]
 
 const businessSegments = [
@@ -105,7 +104,7 @@ const fodaCards = [
   {
     title: 'Debilidades',
     tone: 'amber',
-    points: ['CAPEX 14,5% ingresos', 'D/E 1,72x (alto vs pares)', 'Dependencia carbón en caída'],
+    points: ['CAPEX 14,5% ingresos', 'Dependencia carbón en caída'],
   },
   {
     title: 'Amenazas',
@@ -114,10 +113,34 @@ const fodaCards = [
   },
 ]
 
-const operatingRatio = [
-  { year: 'FY2021', value: '57,1%', height: 82, tone: 'blue' },
-  { year: 'FY2023', value: '60,9%', height: 95, tone: 'blue' },
-  { year: 'FY2025', value: '59,8%', height: 90, tone: 'amber' },
+const operatingMetrics = [
+  {
+    title: 'Operating Ratio',
+    subtitle: 'Dato anual 2025',
+    value: '59,8%',
+    caption: 'menor = mejor',
+    detail: 'Refleja la eficiencia operativa actual de la red.',
+    tone: 'amber',
+    icon: <Gauge />,
+  },
+  {
+    title: 'Freight Car Velocity',
+    subtitle: 'Mejora 2020-2025',
+    value: '+1,81%',
+    caption: 'mejora',
+    detail: 'Muestra mayor fluidez y mejor uso de activos vs 2020.',
+    tone: 'blue',
+    icon: <TrendingUp />,
+  },
+  {
+    title: 'Fuel Efficiency',
+    subtitle: 'Mejora 2020-2025',
+    value: '-2,55%',
+    caption: 'menor consumo = mejor',
+    detail: 'Indica menor consumo por unidad de trabajo y una operación más eficiente vs 2020.',
+    tone: 'teal',
+    icon: <Leaf />,
+  },
 ]
 
 const ratiosData = [
@@ -200,16 +223,12 @@ const conclusionSummary = [
 ]
 
 const projectionSeries = [
-  { year: '2021', revenue: 21804, ebit: 9300 },
-  { year: '2022', revenue: 24875, ebit: 9900 },
-  { year: '2023', revenue: 24119, ebit: 9200 },
-  { year: '2024', revenue: 24250, ebit: 9800 },
-  { year: '2025', revenue: 24510, ebit: 9900 },
-  { year: '2026E', revenue: 25350, ebit: 10220 },
-  { year: '2027E', revenue: 26360, ebit: 10660 },
-  { year: '2028E', revenue: 27530, ebit: 11205 },
-  { year: '2029E', revenue: 28560, ebit: 11620 },
-  { year: '2030E', revenue: 29480, ebit: 12000 },
+  { year: '2025A', revenue: 24510, ebit: 9846 },
+  { year: '2026E', revenue: 25368, ebit: 10223 },
+  { year: '2027E', revenue: 26383, ebit: 10659 },
+  { year: '2028E', revenue: 27570, ebit: 11166 },
+  { year: '2029E', revenue: 28535, ebit: 11585 },
+  { year: '2030E', revenue: 29391, ebit: 11962 },
 ]
 
 const fcffBase = [
@@ -264,60 +283,66 @@ function CompanyOverview() {
 function IndustryStrategy() {
   return (
     <div className="strategy-layout">
-      <div className="strategy-left">
-        <section className="panel-card industry-panel" style={stagger(0)}>
+      <section className="panel-card industry-panel" style={stagger(0)}>
+        <header className="industry-panel-header">
+          <span>Panorama competitivo</span>
           <h3>Industria Class I</h3>
-          <div className="industry-facts">
-            {industryFacts.map((fact, i) => (
-              <div className="industry-fact" style={stagger(i)} key={fact.value}>
-                <strong>{fact.value}</strong>
-                <span>{fact.label}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <div className="foda-grid">
-          {fodaCards.map((card, i) => (
-            <section className={`foda-card tone-${card.tone}`} style={stagger(i + 2)} key={card.title}>
-              <h4>{card.title}</h4>
-              <ul>
-                {card.points.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      </div>
-
-      <section className="panel-card psr-panel" style={stagger(1)}>
-        <h3>Estrategia: PSR</h3>
-        <p>Operating Ratio (menor = mejor)</p>
-        <div className="or-chart">
-          {operatingRatio.map((bar, i) => (
-            <div className="or-column" style={stagger(i)} key={bar.year}>
-              <strong>{bar.value}</strong>
-              <div className={`or-bar tone-${bar.tone}`} style={{ height: `${bar.height}%` }} />
-              <span>{bar.year}</span>
+          <p>Una red esencial, concentrada y estructuralmente eficiente.</p>
+        </header>
+        <div className="industry-facts">
+          {industryFacts.map((fact, i) => (
+            <div className="industry-fact" style={stagger(i)} key={fact.value}>
+              <strong>{fact.value}</strong>
+              <span>{fact.label}</span>
             </div>
           ))}
         </div>
-        <div className="strategy-notes">
-          <p>
-            <strong>USD 245M:</strong>
-            <span>ahorro por cada -1pp de OR</span>
-          </p>
-          <p>
-            <strong>Fusión NSC:</strong>
-            <span>50K miles · 43 estados</span>
-          </p>
-          <p>
-            <strong>26% Ferromex:</strong>
-            <span>puente USMCA México-EE.UU.</span>
-          </p>
+        <div className="industry-takeaway">
+          <strong>Ventaja estructural</strong>
+          <span>Escala, densidad de red y barreras de entrada sostienen el moat ferroviario.</span>
         </div>
       </section>
+
+      <section className="panel-card psr-panel" style={stagger(1)}>
+        <header className="psr-panel-header">
+          <div>
+            <span>Precision Scheduled Railroading</span>
+            <h3>Estrategia Operativa</h3>
+          </div>
+          <b>PSR</b>
+        </header>
+        <div className="operating-card-grid">
+          {operatingMetrics.map((metric, i) => (
+            <article className={'operating-card tone-' + metric.tone} style={stagger(i)} key={metric.title}>
+              <div className="operating-card-icon">{metric.icon}</div>
+              <h4>{metric.title}</h4>
+              <span>{metric.subtitle}</span>
+              <strong>{metric.value}</strong>
+              <small>{metric.caption}</small>
+              <p className="operating-card-detail">{metric.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+function FodaMatrixDashboard() {
+  return (
+    <div className="foda-matrix-layout">
+      <div className="foda-matrix-grid">
+        {fodaCards.map((card, i) => (
+          <section className={`foda-matrix-card tone-${card.tone}`} style={stagger(i)} key={card.title}>
+            <h3>{card.title}</h3>
+            <ul>
+              {card.points.map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
     </div>
   )
 }
@@ -531,7 +556,7 @@ function ProjectionDashboard() {
   return (
     <div className="projection-layout">
       <section className="panel-card projection-chart-panel" style={stagger(0)}>
-        <svg className="projection-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Revenue y EBIT 2021 a 2030E">
+        <svg className="projection-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Revenue y EBIT 2025A a 2030E">
           {yTicks.map((tick) => {
             const y = padding.top + (1 - tick / maxValue) * chartHeight
             return (
@@ -898,14 +923,22 @@ function App() {
       },
       {
         eyebrow: '02 · Industria',
-        title: 'Industria · FODA · Estrategia',
+        title: 'Industria · Estrategia Operativa',
         subtitle: 'Class I Railroad en duopolio occidental · PSR como ventaja competitiva clave',
         icon: <Gauge />,
         cargo: 'Industria',
         body: <IndustryStrategy />,
       },
       {
-        eyebrow: '03 · Ratios',
+        eyebrow: '03 · FODA',
+        title: 'Matriz FODA',
+        subtitle: 'Fortalezas · Oportunidades · Debilidades · Amenazas',
+        icon: <BarChart3 />,
+        cargo: 'FODA',
+        body: <FodaMatrixDashboard />,
+      },
+      {
+        eyebrow: '04 · Ratios',
         title: 'Análisis Financiero: Ratios',
         subtitle: 'Rentabilidad · Solvencia · Liquidez · DuPont',
         icon: <BarChart3 />,
@@ -913,7 +946,7 @@ function App() {
         body: <RatioDashboard />,
       },
       {
-        eyebrow: '04 · Mercado',
+        eyebrow: '05 · Mercado',
         title: 'Evolución del Precio de Mercado',
         subtitle: 'UNP · Cotización histórica · Valor de mercado incorporado en la tesis',
         icon: <TrendingUp />,
@@ -921,7 +954,7 @@ function App() {
         body: <MarketPriceDashboard />,
       },
       {
-        eyebrow: '05 · Finanzas',
+        eyebrow: '06 · Finanzas',
         title: 'Evolución Financiera & Dividendos',
         subtitle: 'FY2021-FY2025 · Value vs Growth · Dividend Aristocrat',
         icon: <TrendingUp />,
@@ -929,7 +962,7 @@ function App() {
         body: <FinancialEvolution />,
       },
       {
-        eyebrow: '06 · Management',
+        eyebrow: '07 · Management',
         title: 'Management, Accionistas & Análisis Estratégico',
         subtitle: 'Porter · PESTEL · Gobierno corporativo',
         icon: <Building2 />,
@@ -937,7 +970,7 @@ function App() {
         body: <ManagementStrategy />,
       },
       {
-        eyebrow: '07 · Valuación',
+        eyebrow: '08 · Valuación',
         title: 'WACC · Proyecciones · Valuación',
         subtitle: 'DDM · DCF (3 escenarios) · Múltiples',
         icon: <Landmark />,
@@ -945,7 +978,7 @@ function App() {
         body: <ValuationDashboard />,
       },
       {
-        eyebrow: '08 · Proyecciones',
+        eyebrow: '09 · Proyecciones',
         title: 'Proyecciones 2026-2030: Escenario Base',
         subtitle: 'FCFF = NOPAT + D&A - CAPEX - DeltaWC · WACC 6,78% · g 2,5%',
         icon: <BarChart3 />,
@@ -953,7 +986,7 @@ function App() {
         body: <ProjectionDashboard />,
       },
       {
-        eyebrow: '09 · Recomendación',
+        eyebrow: '10 · Recomendación',
         title: 'Conclusión & Recomendación Final',
         subtitle: 'Precio objetivo ponderado · Upside / Downside · Recomendación',
         icon: <TrendingUp />,
@@ -961,7 +994,7 @@ function App() {
         body: <RecommendationDashboard />,
       },
       {
-        eyebrow: '10 · Resumen',
+        eyebrow: '11 · Resumen',
         title: 'Union Pacific Corporation',
         subtitle: 'NYSE: UNP · Análisis & Valuación',
         icon: <Landmark />,
