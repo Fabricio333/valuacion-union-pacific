@@ -485,7 +485,7 @@ function ValuationDashboard() {
       <section className="wacc-panel" style={stagger(0)}>
         <div>
           <strong>WACC = 6,78%</strong>
-          <p>rm = 7,28% (SPY 25 años) · Kd = YTM ponderado bonos UNP en circulación</p>
+          <p>rm = 7,28% (SPY 25 años) · Wd = 1 - We · Kd = YTM ponderado bonos UNP en circulación</p>
         </div>
         <div className="wacc-items">
           {waccItems.map(([label, value], i) => (
@@ -674,13 +674,10 @@ function RecommendationDashboard() {
 
 function FinalSummaryDashboard() {
   return (
-    <div className="final-summary-layout">
-      {conclusionSummary.map((metric, i) => (
-        <div className={`summary-metric ${metric.value === 'MANTENER' ? 'recommend' : ''}`} style={stagger(i)} key={metric.label}>
-          <strong>{metric.value}</strong>
-          <span>{metric.label}</span>
-        </div>
-      ))}
+    <div className="thank-you-layout">
+      <img src="/union-pacific-logo.svg" alt="Union Pacific" />
+      <p>Muchas gracias</p>
+      <span>Union Pacific Corporation · NYSE: UNP</span>
     </div>
   )
 }
@@ -946,20 +943,20 @@ function App() {
         body: <RatioDashboard />,
       },
       {
-        eyebrow: '05 · Mercado',
-        title: 'Evolución del Precio de Mercado',
-        subtitle: 'UNP · Cotización histórica · Valor de mercado incorporado en la tesis',
-        icon: <TrendingUp />,
-        cargo: 'Mercado',
-        body: <MarketPriceDashboard />,
-      },
-      {
-        eyebrow: '06 · Finanzas',
+        eyebrow: '05 · Finanzas',
         title: 'Evolución Financiera & Dividendos',
         subtitle: 'FY2021-FY2025 · Value vs Growth · Dividend Aristocrat',
         icon: <TrendingUp />,
         cargo: 'Finanzas',
         body: <FinancialEvolution />,
+      },
+      {
+        eyebrow: '06 · Mercado',
+        title: 'Evolución del Precio de Mercado',
+        subtitle: 'UNP · Cotización histórica · Valor de mercado incorporado en la tesis',
+        icon: <TrendingUp />,
+        cargo: 'Mercado',
+        body: <MarketPriceDashboard />,
       },
       {
         eyebrow: '07 · Management',
@@ -994,11 +991,11 @@ function App() {
         body: <RecommendationDashboard />,
       },
       {
-        eyebrow: '11 · Resumen',
-        title: 'Union Pacific Corporation',
-        subtitle: 'NYSE: UNP · Análisis & Valuación',
+        eyebrow: '11 · Fin',
+        title: 'Muchas gracias',
+        subtitle: 'Union Pacific Corporation · NYSE: UNP',
         icon: <Landmark />,
-        cargo: 'Resumen',
+        cargo: 'Fin',
         body: <FinalSummaryDashboard />,
       },
     ],

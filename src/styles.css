@@ -4432,3 +4432,38 @@ h1 {
     text-align: left;
   }
 }
+
+
+.thank-you-layout {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  min-height: min(560px, 58vh);
+  text-align: center;
+}
+
+.thank-you-layout img {
+  width: clamp(110px, 10vw, 160px);
+  aspect-ratio: 1;
+  object-fit: contain;
+  padding: 12px;
+  border: 1px solid #ffffffcc;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 24px 54px #0009;
+}
+
+.slide-body .thank-you-layout p {
+  margin: 6px 0 0;
+  color: #f5bd46;
+  font-size: clamp(44px, 6vw, 88px);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.thank-you-layout span {
+  color: #c8d3df;
+  font-size: clamp(16px, 1.5vw, 24px);
+  font-weight: 700;
+}
